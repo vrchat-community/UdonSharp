@@ -103,3 +103,5 @@ For more example scripts take a look at the wiki page for [examples](https://git
 
 # 
 [![Discord](https://img.shields.io/badge/Discord-Merlin%27s%20Discord%20Server-blueviolet?logo=discord)](https://discord.gg/Ub2n8ZA)
+
+CHECK THIS CHANGE YO
