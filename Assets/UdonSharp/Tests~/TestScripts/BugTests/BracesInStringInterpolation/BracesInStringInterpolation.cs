@@ -39,8 +39,8 @@ namespace UdonSharp.Tests
 
             tester.TestAssertion("String interpolation null", $"{null}" == string.Empty);
 
-            string constNullStr = null;
-            tester.TestAssertion("String interpolation null", $"{constNullStr}" == string.Empty);
+            const string constNullStr = null;
+            tester.TestAssertion("String interpolation const null var", $"{constNullStr}" == string.Empty);
 
             tester.TestAssertion("String interpolation pattern to watch out for 1", $"{{{{{12345:D06}}}}}" == "{{D123456}}");
             tester.TestAssertion("String interpolation pattern to watch out for 2", $"{{{{{12345,7:D06}}}}}" == "{{D123456}}");
