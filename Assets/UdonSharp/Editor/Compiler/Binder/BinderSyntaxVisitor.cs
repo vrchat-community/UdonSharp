@@ -956,7 +956,7 @@ namespace UdonSharp.Compiler.Binder
             {
                 if (interpolationNode is InterpolatedStringTextSyntax stringContent)
                 {
-                    string newValueText = stringContent.TextToken.ValueText.Replace("{{", "{").Replace("}}", "}");
+                    string newValueText = stringContent.TextToken.ValueText;
                     interpolationStr.Append(newValueText);
                 }
                 else if (interpolationNode is InterpolationSyntax interpolatedExpression)
@@ -987,7 +987,7 @@ namespace UdonSharp.Compiler.Binder
             }
 
             if (interpolationExpressions.Count == 0)
-                return new BoundConstantExpression(new ConstantValue<string>(interpolationStr.ToString()),
+                return new BoundConstantExpression(new ConstantValue<string>(string.Format(interpolationStr.ToString())),
                     Context.GetTypeSymbol(SpecialType.System_String), node);
 
             return new BoundInterpolatedStringExpression(node, interpolationStr.ToString(), interpolationExpressions.ToArray(), Context);
