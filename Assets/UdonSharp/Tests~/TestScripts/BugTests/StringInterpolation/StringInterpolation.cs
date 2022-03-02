@@ -21,7 +21,7 @@ namespace UdonSharp.Tests
         {
             tester.TestAssertion("String interpolation 1 arg", $"arg is {1}" == "arg is 1");
 
-            tester.TestAssertion("String interpolation 4 arg", $"args are {1}, {2}, {3}, {4}" == "args are 1, 2, 3, 4");
+            tester.TestAssertion("String interpolation 4 args", $"args are {1}, {2}, {3}, {4}" == "args are 1, 2, 3, 4");
 
             tester.TestAssertion("String interpolation 1 left brace", $"One left brace \"{{\"" == "One left brace \"{\"");
 
