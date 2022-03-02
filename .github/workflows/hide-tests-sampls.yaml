@@ -1,0 +1,34 @@
+﻿# This workflow renames the 'Tests' and 'Samples' directories, adding a postfix ~,
+# then pushes the result to a different branch. This means that the dev branch can
+# be directly worked on in unity, including all tests and samples, and a branch for
+# use in package management systems will automatically be maintained.
+
+name: 'Clone and hide test/samples'
+
+permissions:
+  contents: write
+
+on:
+  push: {}
+
+jobs:
+  do-rename:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Hide Tests and Samples
+        run: |
+          for i in Samples Tests; do
+            git mv Assets/UdonSharp/$i "Assets/UdonSharp/${i}~"
+            git rm Assets/UdonSharp/$i.meta
+          done
+          git config user.name 'UdonSharp CI'
+          git config user.email 'udonsharp-ci@example.com'
+          git commit -m "Hide Samples and Tests from package managers"
+
+      - name: Push to release branch
+        run: |
+          git push --force origin HEAD:${{ github.ref_name }}-release
