@@ -956,8 +956,7 @@ namespace UdonSharp.Compiler.Binder
             {
                 if (interpolationNode is InterpolatedStringTextSyntax stringContent)
                 {
-                    string newValueText = stringContent.TextToken.ValueText;
-                    interpolationStr.Append(newValueText);
+                    interpolationStr.Append(stringContent.TextToken.ValueText);
                 }
                 else if (interpolationNode is InterpolationSyntax interpolatedExpression)
                 {
