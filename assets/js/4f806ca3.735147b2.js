@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkudon_sharp=self.webpackChunkudon_sharp||[]).push([[422],{6179:function(e){e.exports=JSON.parse('{"hello":{"allTagsPath":"/news/tags","name":"hello","count":1,"permalink":"/news/tags/hello"}}')}}]);

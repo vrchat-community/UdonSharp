@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://udonsharp.docs.vrchat.com/news</id>
+    <title>UdonSharp Blog</title>
+    <updated>2022-04-07T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://udonsharp.docs.vrchat.com/news"/>
+    <subtitle>UdonSharp Blog</subtitle>
+    <icon>https://udonsharp.docs.vrchat.com/images/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Welcome]]></title>
+        <id>welcome</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/welcome"/>
+        <updated>2022-04-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Just testing out the blog function]]></summary>
+        <content type="html"><![CDATA[<p>Just testing out the blog function</p>]]></content>
+        <author>
+            <name>Momo the Monster</name>
+            <uri>https://github.com/momo-the-monster</uri>
+        </author>
+        <category label="hello" term="hello"/>
+    </entry>
+</feed>
