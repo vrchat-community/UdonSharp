@@ -593,24 +593,32 @@ namespace UdonSharp.Compiler.Binder
 
             MethodSymbol operatorSymbol = (MethodSymbol)GetSymbol(node);
 
+            BoundExpression rhsExpression = VisitExpression(node.Right);
+
             if (operatorSymbol is ExternBuiltinOperatorSymbol builtinOperatorSymbol)
             {
-                if (builtinOperatorSymbol.OperatorType == BuiltinOperatorType.Addition &&
-                    builtinOperatorSymbol.Parameters[0].Type != builtinOperatorSymbol.Parameters[1].Type &&
-                    (builtinOperatorSymbol.Parameters[0].Type == Context.GetTypeSymbol(SpecialType.System_String) ||
-                     builtinOperatorSymbol.Parameters[1].Type == Context.GetTypeSymbol(SpecialType.System_String)))
+                if (builtinOperatorSymbol.ReturnType == Context.GetTypeSymbol(SpecialType.System_String) &&
+                    builtinOperatorSymbol.OperatorType == BuiltinOperatorType.Addition &&
+                    builtinOperatorSymbol.Parameters[0].Type != builtinOperatorSymbol.Parameters[1].Type)
                 {
-                    operatorSymbol = new ExternBuiltinOperatorSymbol(builtinOperatorSymbol.RoslynSymbol, Context);
+                    if (rhsExpression.IsConstant && builtinOperatorSymbol.Parameters[1].Type == Context.GetTypeSymbol(SpecialType.System_Object))
+                    {
+                        rhsExpression = new BoundConstantExpression(rhsExpression.ConstantValue.Value.ToString(), Context.GetTypeSymbol(SpecialType.System_String));
+                        operatorSymbol = new ExternSynthesizedOperatorSymbol(BuiltinOperatorType.Addition, Context.GetTypeSymbol(SpecialType.System_String), Context);
+                    }
+                    else
+                    {
+                        operatorSymbol = new ExternBuiltinOperatorSymbol(builtinOperatorSymbol.RoslynSymbol, Context);
+                    }
                 }
                 else
                 {
-                    operatorSymbol = new ExternSynthesizedOperatorSymbol(builtinOperatorSymbol.OperatorType,
-                        assignmentTarget.ValueType, Context);
+                    operatorSymbol = new ExternSynthesizedOperatorSymbol(builtinOperatorSymbol.OperatorType, assignmentTarget.ValueType, Context);
                 }
             }
 
             return BoundInvocationExpression.CreateBoundInvocation(Context, node, operatorSymbol, null,
-                new[] { assignmentTarget, VisitExpression(node.Right, operatorSymbol.Parameters[1].Type) });
+                new[] { assignmentTarget, ConvertExpression(node, rhsExpression, operatorSymbol.Parameters[1].Type) });
         }
 
         public override BoundNode VisitConditionalExpression(ConditionalExpressionSyntax node)
