@@ -665,6 +665,26 @@ namespace UdonSharp.Compiler.Binder
 
             return new BoundCoalesceExpression(node, lhs, rhs);
         }
+
+        private BoundExpression HandleNullEqualsExpression(BinaryExpressionSyntax node)
+        {
+            TypeSymbol booleanType = Context.GetTypeSymbol(SpecialType.System_Boolean);
+            IConstantValue booleanValue;
+
+            switch (node.Kind())
+            {
+                case SyntaxKind.EqualsExpression:
+                    booleanValue = new ConstantValue<bool>(true);
+                    break;
+                case SyntaxKind.NotEqualsExpression:
+                    booleanValue = new ConstantValue<bool>(false);
+                    break;
+                default:
+                    throw new InvalidOperationException("Invalid equals expression");
+            }
+
+            return new BoundConstantExpression(booleanValue, booleanType, node);
+        }
         
         public override BoundNode VisitBinaryExpression(BinaryExpressionSyntax node)
         {
@@ -674,28 +694,13 @@ namespace UdonSharp.Compiler.Binder
 
             if (node.Kind() == SyntaxKind.CoalesceExpression)
                 return HandleNullCoalescingExpression(node);
-            
+
             MethodSymbol binaryMethodSymbol = (MethodSymbol)GetSymbol(node);
-            
-            if (binaryMethodSymbol == null)
-            {
-                TypeSymbol booleanType = Context.GetTypeSymbol(SpecialType.System_Boolean);
-                IConstantValue booleanValue;
 
-                switch (node.Kind())
-                {
-                    case SyntaxKind.EqualsExpression:
-                        booleanValue = new ConstantValue<bool>(true);
-                        break;
-                    case SyntaxKind.NotEqualsExpression:
-                        booleanValue = new ConstantValue<bool>(false);
-                        break;
-                    default:
-                        throw new InvalidOperationException("Invalid binary expression");
-                }
-
-                return new BoundConstantExpression(booleanValue, booleanType, node);
-            }
+            if (binaryMethodSymbol == null &&
+                (node.Kind() == SyntaxKind.EqualsExpression ||
+                 node.Kind() == SyntaxKind.NotEqualsExpression))
+                return HandleNullEqualsExpression(node);
 
             BoundExpression lhs = VisitExpression(node.Left, binaryMethodSymbol.Parameters[0].Type);
             BoundExpression rhs = VisitExpression(node.Right, binaryMethodSymbol.Parameters[1].Type);
