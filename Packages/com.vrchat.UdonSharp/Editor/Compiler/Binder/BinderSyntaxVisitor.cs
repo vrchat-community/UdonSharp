@@ -588,37 +588,41 @@ namespace UdonSharp.Compiler.Binder
         {
             BoundAccessExpression assignmentTarget = VisitAccessExpression(node.Left);
 
-            if (node.Kind() == SyntaxKind.SimpleAssignmentExpression)
-                return new BoundAssignmentExpression(node, assignmentTarget, VisitExpression(node.Right, assignmentTarget.ValueType));
-
-            MethodSymbol operatorSymbol = (MethodSymbol)GetSymbol(node);
-
-            BoundExpression rhsExpression = VisitExpression(node.Right);
-
-            if (operatorSymbol is ExternBuiltinOperatorSymbol builtinOperatorSymbol)
+            if (node.Kind() != SyntaxKind.SimpleAssignmentExpression)
             {
-                if (builtinOperatorSymbol.ReturnType == Context.GetTypeSymbol(SpecialType.System_String) &&
-                    builtinOperatorSymbol.OperatorType == BuiltinOperatorType.Addition &&
-                    builtinOperatorSymbol.Parameters[0].Type != builtinOperatorSymbol.Parameters[1].Type)
+                MethodSymbol operatorSymbol = (MethodSymbol)GetSymbol(node);
+
+                BoundExpression rhsExpression = VisitExpression(node.Right);
+
+                if (operatorSymbol is ExternBuiltinOperatorSymbol builtinOperatorSymbol)
                 {
-                    if (rhsExpression.IsConstant && builtinOperatorSymbol.Parameters[1].Type == Context.GetTypeSymbol(SpecialType.System_Object))
+                    if (builtinOperatorSymbol.ReturnType == Context.GetTypeSymbol(SpecialType.System_String) &&
+                        builtinOperatorSymbol.OperatorType == BuiltinOperatorType.Addition &&
+                        builtinOperatorSymbol.Parameters[0].Type != builtinOperatorSymbol.Parameters[1].Type)
                     {
-                        rhsExpression = new BoundConstantExpression(rhsExpression.ConstantValue.Value.ToString(), Context.GetTypeSymbol(SpecialType.System_String));
-                        operatorSymbol = new ExternSynthesizedOperatorSymbol(BuiltinOperatorType.Addition, Context.GetTypeSymbol(SpecialType.System_String), Context);
+                        if (rhsExpression.IsConstant && builtinOperatorSymbol.Parameters[1].Type == Context.GetTypeSymbol(SpecialType.System_Object))
+                        {
+                            rhsExpression = new BoundConstantExpression(rhsExpression.ConstantValue.Value.ToString(),
+                                Context.GetTypeSymbol(SpecialType.System_String));
+                            operatorSymbol = new ExternSynthesizedOperatorSymbol(BuiltinOperatorType.Addition,
+                                Context.GetTypeSymbol(SpecialType.System_String), Context);
+                        }
+                        else
+                        {
+                            operatorSymbol = new ExternBuiltinOperatorSymbol(builtinOperatorSymbol.RoslynSymbol, Context);
+                        }
                     }
                     else
                     {
-                        operatorSymbol = new ExternBuiltinOperatorSymbol(builtinOperatorSymbol.RoslynSymbol, Context);
+                        operatorSymbol = new ExternSynthesizedOperatorSymbol(builtinOperatorSymbol.OperatorType, assignmentTarget.ValueType, Context);
                     }
                 }
-                else
-                {
-                    operatorSymbol = new ExternSynthesizedOperatorSymbol(builtinOperatorSymbol.OperatorType, assignmentTarget.ValueType, Context);
-                }
+
+                return BoundInvocationExpression.CreateBoundInvocation(Context, node, operatorSymbol, null,
+                    new[] { assignmentTarget, ConvertExpression(node, rhsExpression, operatorSymbol.Parameters[1].Type) });
             }
 
-            return BoundInvocationExpression.CreateBoundInvocation(Context, node, operatorSymbol, null,
-                new[] { assignmentTarget, ConvertExpression(node, rhsExpression, operatorSymbol.Parameters[1].Type) });
+            return new BoundAssignmentExpression(node, assignmentTarget, VisitExpression(node.Right, assignmentTarget.ValueType));
         }
 
         public override BoundNode VisitConditionalExpression(ConditionalExpressionSyntax node)

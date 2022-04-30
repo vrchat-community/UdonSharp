@@ -402,16 +402,7 @@ namespace UdonSharp.Tests
             o = o + "cd";
             o += "ef";
             tester.TestAssertion("String Op +(object, string)", o.ToString() == "abcdef");
-
-            //s = "ab";
-            //s += this;
-            //tester.TestAssertion("USB addition", s == "abUSBString");
         }
-
-        //public override string ToString()
-        //{
-        //    return "USBString";
-        //}
         
         void BitwiseNot()
         {
