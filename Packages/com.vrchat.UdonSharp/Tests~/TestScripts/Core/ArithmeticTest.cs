@@ -32,6 +32,7 @@ namespace UdonSharp.Tests
             DecimalOps();
             BitwiseNot();
             UdonBehaviourFieldCompoundAssignment();
+            NullEquals();
         }
 
         void IntBinaryOps()
@@ -432,6 +433,12 @@ namespace UdonSharp.Tests
             self._testVec.x += 3;
             
             tester.TestAssertion("Field struct compound assignment", _testVec.x == 4);
+        }
+        
+        void NullEquals()
+        {
+            tester.TestAssertion("Null equals null", null == null);
+            tester.TestAssertion("Null doesn't equal null", !(null != null));
         }
     }
 }
