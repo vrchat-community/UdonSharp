@@ -2,22 +2,152 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://udonsharp.docs.vrchat.com/news</id>
     <title>UdonSharp Blog</title>
-    <updated>2022-04-07T00:00:00.000Z</updated>
+    <updated>2022-04-01T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://udonsharp.docs.vrchat.com/news"/>
     <subtitle>UdonSharp Blog</subtitle>
     <icon>https://udonsharp.docs.vrchat.com/images/favicon.ico</icon>
     <entry>
-        <title type="html"><![CDATA[Welcome]]></title>
-        <id>welcome</id>
-        <link href="https://udonsharp.docs.vrchat.com/news/welcome"/>
-        <updated>2022-04-07T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Just testing out the blog function]]></summary>
-        <content type="html"><![CDATA[<p>Just testing out the blog function</p>]]></content>
+        <title type="html"><![CDATA[Release 1.0.0b12]]></title>
+        <id>release-1.0.0b12</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b12"/>
+        <updated>2022-04-01T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Make UdonBehaviourSyncMode attribute affect inherited classes, requested by @BocuD</li><li>Add UDONSHARP scripting define to check for presence of U# in project</li><li>Make upgrade process with scene open more robust</li><li>Add handling for <code>GetComponent(s)&lt;UdonSharpBehaviour&gt;()</code> (the exact UdonSharpBehaviour type, types directly inherited from UdonSharpBehaviour were already handled)</li><li>Add handling for <code>GetComponent(s)&lt;T&gt;()</code> on UdonSharpBehaviour types using inheritance</li><li>Add workaround handling for <code>GetComponent(s)&lt;T&gt;()</code> on VRC component types</li><li>Fix issue where generic methods could leak their type arguments to other uses with different type arguments</li><li>Fix serialization on base class declared fields, reported by @kafeijao</li><li>Add better error when declaring nested types</li></ul>]]></content>
         <author>
-            <name>Momo the Monster</name>
-            <uri>https://github.com/momo-the-monster</uri>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
         </author>
-        <category label="hello" term="hello"/>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b11]]></title>
+        <id>release-1.0.0b11</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b11"/>
+        <updated>2022-03-23T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Improve exposure tree scan speed a little</li><li>Make GetUdonSharpComponent APIs just act like Unity equivalents instead of potentially erroring</li><li>Add fallback drawing for jagged arrays</li><li>Fix issue with local symbols getting incorrectly shared between different generic method type arguments, reported by @Miner28_3</li><li>Fix U# behaviour enabled state not getting synced in the editor UI while in play mode properly, reported by @Fairplex</li><li>Prevent editing script asset on UdonSharpProgramAssets once it has been set since it will not work now. Also add validation for out of sync assigned script types.</li><li>Missing source script warning is now an error</li><li>Obsolete and no-op UpdateProxy and ApplyProxyModifications editor API calls since they aren't needed in editor-time now and could cause issues with the new way of doing things.</li><li>Fix multiply operation * on System.Decimal type, reported by @pnivek</li><li>Fix integer -&gt; user enum conversions when the underlying integer types don't match, reported by @GlitchyDev</li><li>Fix script upgrader more, reported by @Phasedragon</li><li>Make file change detection extend to all scripts that are linked by U# builds</li><li>Fix AddUdonSharpComponent editor scripting APIs as they weren't actually working, reported by @BocuD</li><li>Move UdonSharp menu items to be under the VRChat SDK top level menu</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b10]]></title>
+        <id>release-1.0.0b10</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b10"/>
+        <updated>2022-03-14T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fix script upgrade causing duplication of code in some cases reported by @Narry</li><li>Add support for serializing auto property backing fields</li><li>Mitigate dropdowns having incorrect margins, contributed by @ArchiTechAnon</li><li>Obsolete DrawPublicVariables U# API method and replace with DrawVariables</li><li>Fix unary plus operator causing compile errors</li><li>Make force upgrade button also queue prefab upgrade</li><li>Fix Odin conflicting with U# inspectors, reported by @GlitchyDev and @BocuD</li><li>Fix default editor fallbacks</li><li>Fix multi-edit not being disabled on custom inspectors that do not support it</li><li>Add handling for custom editors that edit child classes</li><li>Re-add exposure tree</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b9]]></title>
+        <id>release-1.0.0b9</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b9"/>
+        <updated>2022-03-04T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Switch to using Unity C# scripts to store U# script data which has the following benefits for U# behaviours:<ul><li>Support for prefab scene deltas</li><li>Support for prefab nesting</li><li>Support for prefab variants</li><li>Multi-edit support</li><li>Editor script dirtying behavior makes more sense</li><li>Custom inspectors and editor scripting now work on prefab assets properly</li></ul></li><li>Add upgrade path for converting old projects to new data format<ul><li>Does not support upgrading nested prefabs and prefab variants since they were not supported prior to 1.0.0b9</li></ul></li><li>Improvements to assembly reload performance</li><li>Inspector enum support</li><li>Fixes for struct value write back, reported by @Hai and @Jordo</li><li>Add InteractionText property to UdonSharpBehaviours</li><li>Fixes for some methods not being found ex System.Type.Name, contributed by @bd_</li><li>Remove redundant COW value dirty on this, contributed by @bd_</li><li>Catch unhandled exceptions from compiler and rethrow them as unhandled exceptions to avoid Tasks silencing exceptions</li><li>Fix double brackets not being unexcaped on interpolated strings that weren't preforming any interpolation, contributed by @ureishi</li><li>'Expected' exceptions used to interrupt compilation now do not dump entire callstack to debug log</li><li>Enable runtime exception watching by default</li><li>Add checks for Unity C# compile errors before initiating a U# compile to avoid confusion</li><li>Add more validation for invalid uses of program assets and script files</li><li>Remove redundant script dirty ignore since it seems like something else was causing the dirtying and is no longer doing it</li><li>Obsolete many editor APIs for editor scripting that are no longer needed</li><li>Obsolete old overloads for station and player join events -- now throws compile error</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b8]]></title>
+        <id>release-1.0.0b8</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b8"/>
+        <updated>2021-09-28T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fix missing null check that could cause method redirects to error in some cases, reported by @Haï~</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b7]]></title>
+        <id>release-1.0.0b7</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b7"/>
+        <updated>2021-09-27T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Add handling for enum variable serialization</li><li>Add generic method/UdonSharpBehaviour type support</li><li>Add handling for IComparible on generic methods</li><li>Fix using .enabled on <code>GetComponent&lt;UserType&gt;()</code> results, reported by @Miner28_3 and @Pema99</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b5]]></title>
+        <id>release-1.0.0b5</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b5"/>
+        <updated>2021-09-22T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fix string compound addition with const character values, reported by @Pema99</li><li>Fix covariant conversion of params arrays on reference type values, reported by @Haï~</li><li>Fix issues with virtual method linkage allocations, reported by @Haï~</li><li>Add checking for cases where base methods are shadowed by inherited methods, reported by @GlitchyDev</li><li>Add checking for cases where base fields are shadowed by fields in inherited classes</li><li>Add checking for abstract U# classes having a U# program asset associated with them, reported by @GlitchyDev</li><li>Add fix for abstract methods causing the compiler to fail</li><li>Add validation to make sure people aren't inheriting from interfaces since they will have support added in the coming weeks</li><li>Add handling for using switch on object condition values, reported by @Pema99</li><li>Add handling for empty statements, reported by @Pema99</li><li>Add validation for the class name of U# behaviours mismatching their containing .cs file name since Unity breaks in dumb ways when it's not the same</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b6]]></title>
+        <id>release-1.0.0b6</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b6"/>
+        <updated>2021-09-22T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fix more issues with params, reported by @Haï~</li><li>Fix issues with static methods on U# behaviours causing naming conflicts, reported by @Haï~</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b4]]></title>
+        <id>release-1.0.0b4</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b4"/>
+        <updated>2021-09-20T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Add @bd_'s optimization for bitwise not operator</li><li>Fix assembly finding handling causing issues with some 3rd party assets, reported by @Haï~</li><li>Add blacklist entry for CyanEmu since it needs to reference some VRC scripts which U# doesn't link, reported by @Haï~ and @Miner28_3</li><li>Fix calls to ToString() on enums, reported by @Miner28_3 and @Haï~</li><li>Fix calls to <code>GetComponents&lt;T&gt;</code> not returning an array type internally, reported by @Miner28_3</li><li>Fix calls to VRC methods with inconsistent return types in their signature such as VRCPlayerApi.GetPickupInHand(), reported by @Haï~</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b2]]></title>
+        <id>release-1.0.0b2</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b2"/>
+        <updated>2021-09-19T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fix compile error when base System.Object methods such as ToString() are overridden, reported by @GlitchyDev</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Release 1.0.0b3]]></title>
+        <id>release-1.0.0b3</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.0.0b3"/>
+        <updated>2021-09-19T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fix increment/decrement/compound assignment operators not converting numeric types of lower precision than int in some cases like on user defined properties, reported by @GlitchyDev</li><li>Fix compile error when using static methods defined in other U# behaviours, reported by @GlitchyDev</li><li>Add errors for when people attempt to use U# scripts that do not belong to a U# assembly, but are part of a C# assembly</li><li>Optimize string interpolations and fix potential issues when using string interpolations in recursive methods</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
     </entry>
 </feed>

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkudon_sharp=self.webpackChunkudon_sharp||[]).push([[5659],{1555:function(e){e.exports=JSON.parse('{"permalink":"/news","page":1,"postsPerPage":10,"totalPages":2,"totalCount":11,"nextPage":"/news/page/2","blogDescription":"Blog","blogTitle":"Blog"}')}}]);
