@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -95,7 +95,7 @@ namespace UdonSharpEditor
             }
 
             folderPath = folderPath.Replace('\\', '/');
-            
+
             string chosenFilePath = EditorUtility.SaveFilePanelInProject("Save UdonSharp File", "", "cs", "Save UdonSharp file", folderPath);
 
             if (chosenFilePath.Length > 0)
@@ -139,7 +139,7 @@ namespace UdonSharpEditor
         {
             errorState = BehaviourInspectorErrorState.Success;
             bool needsUpgradePass = false;
-            
+
             foreach (Object target in targets)
             {
                 UdonBehaviour targetBehaviour = (UdonBehaviour)target;
@@ -151,11 +151,11 @@ namespace UdonSharpEditor
                     break;
                 }
 
-                if (UdonSharpEditorUtility.GetProxyBehaviour(targetBehaviour) != null) 
+                if (UdonSharpEditorUtility.GetProxyBehaviour(targetBehaviour) != null)
                     continue;
-                
+
                 needsUpgradePass = true;
-                    
+
                 if (PrefabUtility.IsPartOfPrefabInstance(targetBehaviour) &&
                     !PrefabUtility.IsAddedComponentOverride(targetBehaviour))
                 {
@@ -182,7 +182,7 @@ namespace UdonSharpEditor
                     if (UdonSharpEditorUtility.GetBehaviourVersion(targetBehaviour) < UdonSharpBehaviourVersion.V1)
                     {
                         UdonSharpEditorUtility.SetIgnoreEvents(true);
-                    
+
                         try
                         {
                             udonSharpBehaviour = (UdonSharpBehaviour)Undo.AddComponent(targetBehaviour.gameObject, UdonSharpEditorUtility.GetUdonSharpBehaviourType(targetBehaviour));
@@ -202,15 +202,15 @@ namespace UdonSharpEditor
                         UdonSharpUtils.LogWarning($"Inspected UdonBehaviour '{targetBehaviour.name}' does not have an associated U# behaviour, but has a version that indicates it should.", targetBehaviour);
                     }
                 }
-                
+
                 if (udonSharpBehaviour != null)
                     udonSharpBehaviour.enabled = targetBehaviour.enabled;
-                
-            #if !UDONSHARP_DEBUG
+
+#if !UDONSHARP_DEBUG
                 targetBehaviour.hideFlags = HideFlags.HideInInspector;
-            #else
+#else
                 targetBehaviour.hideFlags = HideFlags.None;
-            #endif
+#endif
             }
         }
 
@@ -219,12 +219,12 @@ namespace UdonSharpEditor
             switch (errorState)
             {
                 case BehaviourInspectorErrorState.Success:
-                #if UDONSHARP_DEBUG
+#if UDONSHARP_DEBUG
                     EditorGUILayout.HelpBox("UDONSHARP_DEBUG is defined; backing UdonBehaviour is shown", MessageType.Info);
-                #else
+#else
                     EditorGUILayout.HelpBox("Something probably went wrong, you should not be able to see the underlying UdonBehaviour for UdonSharpBehaviours", MessageType.Warning);
-                #endif
-            
+#endif
+
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUILayout.ObjectField("Linked U# Behaviour", UdonSharpEditorUtility.GetProxyBehaviour((UdonBehaviour)target), typeof(UdonSharpBehaviour), true);
                     EditorGUILayout.ObjectField("Program Source", ((UdonBehaviour)target).programSource, typeof(AbstractUdonProgramSource), false);
@@ -235,7 +235,7 @@ namespace UdonSharpEditor
                     break;
                 case BehaviourInspectorErrorState.NoValidUSharpProgram:
                     EditorGUILayout.HelpBox("U# behaviour is not pointing to a valid U# program asset.", MessageType.Error);
-                    
+
                     UdonSharpProgramAsset programAsset = ((UdonBehaviour)target).programSource as UdonSharpProgramAsset;
 
                     if (programAsset && programAsset.sourceCsScript == null)
@@ -247,7 +247,7 @@ namespace UdonSharpEditor
         }
     }
 
-#region Drawer override boilerplate
+    #region Drawer override boilerplate
     [InitializeOnLoad]
     internal class UdonBehaviourDrawerOverride
     {
@@ -259,10 +259,10 @@ namespace UdonSharpEditor
         /// <summary>
         /// Handles removing the reference to the default UdonBehaviourEditor and injecting our own custom editor UdonBehaviourOverrideEditor
         /// </summary>
-        internal static void OverrideUdonBehaviourDrawer() 
+        internal static void OverrideUdonBehaviourDrawer()
         {
             Type editorAttributesClass = typeof(Editor).Assembly.GetType("UnityEditor.CustomEditorAttributes");
-            
+
             FieldInfo initializedField = editorAttributesClass.GetField("s_Initialized", BindingFlags.Static | BindingFlags.NonPublic);
 
             if (!(bool)initializedField.GetValue(null))
@@ -273,7 +273,7 @@ namespace UdonSharpEditor
 
                 initializedField.SetValue(null, true);
             }
-            
+
             FieldInfo customEditorField = editorAttributesClass.GetField("kSCustomEditors", BindingFlags.NonPublic | BindingFlags.Static);
             FieldInfo customMultiEditorField = editorAttributesClass.GetField("kSCustomMultiEditors", BindingFlags.NonPublic | BindingFlags.Static);
 
@@ -295,7 +295,7 @@ namespace UdonSharpEditor
 
 
             MethodInfo addTypeMethod = fieldType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                                                .First(e => e.Name == "Add" && 
+                                                .First(e => e.Name == "Add" &&
                                                        e.GetParameters().Length == 2 &&
                                                        e.GetParameters()[0].ParameterType == typeof(Type) &&
                                                        e.GetParameters()[1].ParameterType == monoEditorTypeListType);
@@ -311,28 +311,28 @@ namespace UdonSharpEditor
             {
                 if (!inspectedType.IsSubclassOf(typeof(UdonSharpBehaviour)))
                     continue;
-                
+
                 object editorTypeList = Activator.CreateInstance(monoEditorTypeListType);
 
                 object editorTypeObject = Activator.CreateInstance(monoEditorTypeType);
-            
+
                 monoEditorTypeInspectedTypeField.SetValue(editorTypeObject, inspectedType);
                 monoEditorTypeInspectorTypeField.SetValue(editorTypeObject, typeof(UdonSharpBehaviourOverrideEditor));
-            
-                listAddTypeMethod.Invoke(editorTypeList, new [] {editorTypeObject});
+
+                listAddTypeMethod.Invoke(editorTypeList, new[] { editorTypeObject });
 
                 removeTypeMethod.Invoke(customEditorDictionary, new object[] { inspectedType });
 
-                addTypeMethod.Invoke(customEditorDictionary, new [] { inspectedType, editorTypeList });
+                addTypeMethod.Invoke(customEditorDictionary, new[] { inspectedType, editorTypeList });
 
                 removeTypeMethod.Invoke(customMultiEditorDictionary, new object[] { inspectedType });
-                addTypeMethod.Invoke(customMultiEditorDictionary, new [] { inspectedType, editorTypeList });
+                addTypeMethod.Invoke(customMultiEditorDictionary, new[] { inspectedType, editorTypeList });
             }
         }
     }
-#endregion
+    #endregion
 
-#region Editor Manager
+    #region Editor Manager
     internal static class UdonSharpCustomEditorManager
     {
         private static Dictionary<Type, Type> _typeInspectorMap;
@@ -347,13 +347,13 @@ namespace UdonSharpEditor
             }
         }
 
-        private static bool _initialized; 
+        private static bool _initialized;
 
         private static void InitInspectorMap()
         {
             if (_initialized)
                 return;
-            
+
             _typeInspectorMap = new Dictionary<Type, Type>();
             _defaultInspectorMap = new Dictionary<string, (string, Type)>();
 
@@ -370,27 +370,27 @@ namespace UdonSharpEditor
                 {
                     if (editorAttribute == null || editorAttribute.GetType() != typeof(CustomEditor)) // The CustomEditorForRenderPipeline attribute inherits from CustomEditor, but we do not want to take that into account.
                         continue;
-                    
+
                     Type inspectedType = (Type)inspectedTypeField.GetValue(editorAttribute);
 
-                    if (!inspectedType.IsSubclassOf(typeof(UdonSharpBehaviour))) 
+                    if (!inspectedType.IsSubclassOf(typeof(UdonSharpBehaviour)))
                         continue;
-                        
+
                     if (_typeInspectorMap.ContainsKey(inspectedType))
                     {
                         UdonSharpUtils.LogError($"Cannot register inspector '{editorType.Name}' for type '{inspectedType.Name}' since inspector '{_typeInspectorMap[inspectedType].Name}' is already registered");
                         continue;
                     }
-                    
+
                     _typeInspectorMap.Add(inspectedType, editorType);
                 }
             }
 
             foreach (Type udonSharpBehaviourType in TypeCache.GetTypesDerivedFrom<UdonSharpBehaviour>())
             {
-                if (_typeInspectorMap.ContainsKey(udonSharpBehaviourType)) 
+                if (_typeInspectorMap.ContainsKey(udonSharpBehaviourType))
                     continue;
-                
+
                 Type currentType = udonSharpBehaviourType.BaseType;
 
                 bool foundType = false;
@@ -404,7 +404,7 @@ namespace UdonSharpEditor
                         foundType = true;
                         break;
                     }
-                        
+
                     currentType = currentType.BaseType;
                 }
 
@@ -441,13 +441,13 @@ namespace UdonSharpEditor
         public static Type GetInspectorEditorType(Type udonSharpBehaviourType)
         {
             InitInspectorMap();
-            
+
             _typeInspectorMap.TryGetValue(udonSharpBehaviourType, out Type editorType);
 
             // Fall through and check for a default editor if no inspector is specified on the behaviour
-            if (editorType != null && editorType != typeof(UdonSharpBehaviourOverrideEditor)) 
+            if (editorType != null && editorType != typeof(UdonSharpBehaviourOverrideEditor))
                 return editorType;
-            
+
             UdonSharpSettings settings = UdonSharpSettings.GetSettings();
 
             string defaultEditor = settings.defaultBehaviourInterfaceType;
@@ -463,7 +463,7 @@ namespace UdonSharpEditor
             return editorType;
         }
     }
-#endregion
+    #endregion
 
     /// <summary>
     /// Custom U# editor for UdonSharpBehaviours that has custom behavior for drawing stuff like sync position and the program asset info
@@ -486,13 +486,13 @@ namespace UdonSharpEditor
                         proxy.enabled = backingBehaviour.enabled;
                 }
             }
-            
+
             foreach (Object targetBehaviour in targets)
                 UdonSharpEditorUtility.RunBehaviourSetupWithUndo((UdonSharpBehaviour)targetBehaviour);
 
-            if (_userEditor != null) 
+            if (_userEditor != null)
                 return;
-            
+
             Type userType = target.GetType();
 
             Type customEditorType = UdonSharpCustomEditorManager.GetInspectorEditorType(userType);
@@ -545,42 +545,42 @@ namespace UdonSharpEditor
         {
             if (!_userEditor)
                 return;
-            
+
             Type customEditorType = _userEditor.GetType();
-        
+
             MethodInfo onSceneGUIMethod = customEditorType?.GetMethod("OnSceneGUI", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
-        
+
             if (onSceneGUIMethod == null)
                 return;
-        
+
             _userEditor.serializedObject.Update();
-        
+
             onSceneGUIMethod.Invoke(_userEditor, null);
         }
 
         private const string BAR_NAME = "UdonSharpScriptBar";
         private VisualElement _rootInspectorElement;
         private VisualElement _userInspectorElement;
-        
+
         public override VisualElement CreateInspectorGUI()
         {
             if (_rootInspectorElement != null)
                 return _rootInspectorElement;
-            
+
             _rootInspectorElement = new VisualElement();
             _rootInspectorElement.name = "UdonSharpInspectorRoot";
 
             RebuildUserInspector();
-            
+
             _rootInspectorElement.Add(_userInspectorElement);
-            
+
             // Create the U# highlight bar on the left
             // A little jank atm, can bleed into some inspectors like the material inspector that Unity adds in some cases
             _rootInspectorElement.RegisterCallback<AttachToPanelEvent>(evt =>
             {
                 InspectorElement inspectorElement = _rootInspectorElement.GetFirstAncestorOfType<InspectorElement>();
                 VisualElement editorElement = inspectorElement.parent;
-        
+
                 VisualElement bar = new VisualElement
                 {
                     name = BAR_NAME,
@@ -609,7 +609,7 @@ namespace UdonSharpEditor
                 {
                     editorElement.Remove(element);
                 }
-        
+
                 editorElement.Add(bar);
             });
 
@@ -619,7 +619,7 @@ namespace UdonSharpEditor
         private void RebuildUserInspector()
         {
             VisualElement originalParent = _userInspectorElement?.parent;
-            
+
             originalParent?.Remove(_userInspectorElement);
             _userInspectorElement = CreateCustomInspectorElement();
             originalParent?.Add(_userInspectorElement);
@@ -639,19 +639,21 @@ namespace UdonSharpEditor
                 return CreateIMGUIInspector(() =>
                 {
                     EditorGUILayout.HelpBox("Selected U# behaviour program source reference is not valid.", MessageType.Warning);
-                    
-                    UdonSharpProgramAsset programAsset = UdonSharpEditorUtility.GetUdonSharpProgramAsset((UdonBehaviour)target);
 
-                    if (programAsset && 
-                        programAsset.sourceCsScript == null &&
-                        UdonSharpGUI.DrawCreateScriptButton(programAsset))
+                    if (target is UdonBehaviour behaviour)
                     {
-                        RebuildUserInspector();
+                        UdonSharpProgramAsset programAsset = UdonSharpEditorUtility.GetUdonSharpProgramAsset(behaviour);
+                        if (programAsset &&
+                            programAsset.sourceCsScript == null &&
+                            UdonSharpGUI.DrawCreateScriptButton(programAsset))
+                        {
+                            RebuildUserInspector();
+                        }
                     }
                 }, true);
             }
 
-            if (!_userEditor) 
+            if (!_userEditor)
                 return CreateDefaultUdonSharpInspectorElement();
 
             if (targets.Length > 1 && !_userEditor.GetType().IsDefined(typeof(CanEditMultipleObjects), false))
@@ -661,7 +663,7 @@ namespace UdonSharpEditor
                     EditorGUILayout.HelpBox("Multi-object editing not supported.", MessageType.None);
                 });
             }
-            
+
             VisualElement userEditorElement = _userEditor.CreateInspectorGUI();
 
             if (userEditorElement != null)
@@ -674,46 +676,46 @@ namespace UdonSharpEditor
         }
 
         private static readonly PropertyInfo _contextWidthProperty = typeof(EditorGUIUtility).GetProperty("contextWidth", BindingFlags.Static | BindingFlags.NonPublic);
-        
+
         // Draws the blue bar on added component overrides
         private static readonly MethodInfo _drawAddedComponentMethod = typeof(Editor).Assembly.GetType("UnityEditor.InspectorWindowUtils").GetMethod("DrawAddedComponentBackground", BindingFlags.Static | BindingFlags.Public);
-        
+
         private int _nullCounter;
 
         private IMGUIContainer CreateIMGUIInspector(Action imguiAction, bool skipSerialize = false, bool defaultMargins = true)
         {
             IMGUIContainer container = new IMGUIContainer();
-            
+
             container.style.overflow = Overflow.Visible;
-            
+
             container.onGUIHandler = () =>
             {
                 if (targets.Any(e => e == null))
                 {
                     if (_nullCounter++ > 5)
                         EditorGUILayout.HelpBox("This inspector is inspecting null behaviours!", MessageType.Error);
-                        
+
                     return;
                 }
 
                 bool isAnimating = AnimationMode.InAnimationMode();
-                
+
                 if (isAnimating)
                     EditorGUILayout.HelpBox("U# Behaviours cannot be animated, disable animation recording/preview to edit fields.", MessageType.Error);
-                
+
                 bool previousHierarchyMode = EditorGUIUtility.hierarchyMode;
                 bool previousWideMode = EditorGUIUtility.wideMode;
-                
+
                 EditorGUIUtility.hierarchyMode = true;
                 EditorGUIUtility.wideMode = (float)_contextWidthProperty.GetValue(null) > 330f;
                 GUI.changed = false;
-                
+
                 _drawAddedComponentMethod.Invoke(null, new object[] { container.contentRect, targets, 0f });
-                
+
                 EditorGUI.BeginDisabledGroup(isAnimating);
-                
+
                 EditorGUILayout.BeginVertical(defaultMargins ? EditorStyles.inspectorDefaultMargins : GUIStyle.none);
-                
+
                 try
                 {
                     if (!skipSerialize && EditorApplication.isPlaying) // We only need this copy in play mode since U# now goes off the behaviour data for setting up UdonBehaviours
@@ -721,7 +723,7 @@ namespace UdonSharpEditor
                         foreach (Object targetProxy in targets)
                             UdonSharpEditorUtility.CopyUdonToProxy((UdonSharpBehaviour)targetProxy, ProxySerializationPolicy.All);
                     }
-                
+
                     if (_userEditor)
                         _userEditor.serializedObject.Update();
 
@@ -736,9 +738,9 @@ namespace UdonSharpEditor
                 finally
                 {
                     EditorGUILayout.EndVertical();
-                    
+
                     EditorGUI.EndDisabledGroup();
-                    
+
                     EditorGUIUtility.wideMode = previousWideMode;
                     EditorGUIUtility.hierarchyMode = previousHierarchyMode;
                 }
@@ -748,7 +750,7 @@ namespace UdonSharpEditor
         }
 
         private static readonly GUIContent _jaggedArrayHeader = new GUIContent("Jagged Arrays", "Fallback inspector handling for jagged arrays since Unity does not handle serializing them.");
-        
+
         private VisualElement CreateDefaultUdonSharpInspectorElement()
         {
             return CreateIMGUIInspector(() =>
@@ -768,11 +770,11 @@ namespace UdonSharpEditor
                     } while (fieldProp.NextVisible(false));
                 }
 
-            #if UDONSHARP_DEBUG
+#if UDONSHARP_DEBUG
                 EditorGUI.BeginDisabledGroup(true);
                 EditorGUILayout.PropertyField(serializedObject.FindProperty(UdonSharpEditorUtility.BackingFieldName));
                 EditorGUI.EndDisabledGroup();
-            #endif
+#endif
 
                 serializedObject.ApplyModifiedProperties();
 
@@ -781,13 +783,13 @@ namespace UdonSharpEditor
 
                 foreach (FieldInfo field in target.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    if (UdonSharpUtils.IsUserJaggedArray(field.FieldType) && 
+                    if (UdonSharpUtils.IsUserJaggedArray(field.FieldType) &&
                         field.IsDefined(typeof(OdinSerializeAttribute)) && // We only want Odin serialized fields since other jagged arrays will not be saved
                         !field.IsDefined(typeof(HideInInspector)))
                     {
-                        if (jaggedArrayFields == null) 
+                        if (jaggedArrayFields == null)
                             jaggedArrayFields = new List<FieldInfo>();
-                        
+
                         jaggedArrayFields.Add(field);
                     }
                 }
@@ -796,12 +798,12 @@ namespace UdonSharpEditor
                     return;
 
                 bool isPrefab = PrefabUtility.IsPartOfPrefabInstance(target);
-                
+
                 // Unity will not record changes to instances even if I force Odin to serialize so :shrug:
                 EditorGUI.BeginDisabledGroup(isPrefab);
 
                 EditorGUILayout.Space();
-                    
+
                 EditorGUILayout.LabelField(_jaggedArrayHeader, EditorStyles.boldLabel);
 
                 if (targets.Length > 1)
@@ -814,7 +816,7 @@ namespace UdonSharpEditor
                     EditorGUILayout.HelpBox("Cannot edit jagged arrays on prefab instances", MessageType.None);
 
                 bool dirtied = false;
-                
+
                 foreach (FieldInfo field in jaggedArrayFields)
                 {
                     EditorGUI.BeginChangeCheck();
@@ -831,7 +833,7 @@ namespace UdonSharpEditor
                 {
                     UdonSharpUtils.SetDirty(target);
                 }
-                
+
                 EditorGUI.EndDisabledGroup();
             });
         }
