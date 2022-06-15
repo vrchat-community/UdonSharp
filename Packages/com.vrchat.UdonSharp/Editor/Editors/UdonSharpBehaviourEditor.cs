@@ -558,7 +558,6 @@ namespace UdonSharpEditor
             onSceneGUIMethod.Invoke(_userEditor, null);
         }
 
-        private const string BAR_NAME = "UdonSharpScriptBar";
         private VisualElement _rootInspectorElement;
         private VisualElement _userInspectorElement;
         
@@ -574,45 +573,6 @@ namespace UdonSharpEditor
             
             _rootInspectorElement.Add(_userInspectorElement);
             
-            // Create the U# highlight bar on the left
-            // A little jank atm, can bleed into some inspectors like the material inspector that Unity adds in some cases
-            _rootInspectorElement.RegisterCallback<AttachToPanelEvent>(evt =>
-            {
-                InspectorElement inspectorElement = _rootInspectorElement.GetFirstAncestorOfType<InspectorElement>();
-                VisualElement editorElement = inspectorElement.parent;
-        
-                VisualElement bar = new VisualElement
-                {
-                    name = BAR_NAME,
-                    style =
-                    {
-                        top = 2,
-                        bottom = 0,
-                        left = 0,
-                        width = 3,
-                        backgroundColor = (Color)new Color32(139, 127, 198, 220),
-                        position = Position.Absolute
-                    }
-                };
-
-                editorElement.style.paddingLeft = 4;
-
-                List<VisualElement> removeList = new List<VisualElement>();
-
-                foreach (VisualElement child in editorElement.Children())
-                {
-                    if (child.name == BAR_NAME)
-                        removeList.Add(child);
-                }
-
-                foreach (VisualElement element in removeList)
-                {
-                    editorElement.Remove(element);
-                }
-        
-                editorElement.Add(bar);
-            });
-
             return _rootInspectorElement;
         }
 
