@@ -11,7 +11,7 @@
 
 - Read the official [Getting Started With Udon](https://ask.vrchat.com/t/getting-started-with-udon/80) thread, this has basic installation instructions for Udon.
 - Install the latest version of [VRCSDK3 + Udon](https://vrchat.com/home/download).
-- Get the [latest release of UdonSharp](https://github.com/Merlin-san/UdonSharp/releases) and install it in your project.
+- Get the [latest release of UdonSharp](https://github.com/vrchat-community/UdonSharp/releases) and install it in your project.
 
 **Getting started**
 
