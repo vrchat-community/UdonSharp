@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkudon_sharp=self.webpackChunkudon_sharp||[]).push([[8878],{7826:function(e){e.exports=JSON.parse('{"allTagsPath":"/news/tags","name":"release beta","count":11,"permalink":"/news/tags/release-beta"}')}}]);
