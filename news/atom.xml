@@ -2,11 +2,24 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://udonsharp.docs.vrchat.com/news</id>
     <title>UdonSharp Blog</title>
-    <updated>2022-04-01T00:00:00.000Z</updated>
+    <updated>2022-08-26T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://udonsharp.docs.vrchat.com/news"/>
     <subtitle>UdonSharp Blog</subtitle>
     <icon>https://udonsharp.docs.vrchat.com/images/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Release 1.1.1]]></title>
+        <id>release-1.1.1</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.1.1"/>
+        <updated>2022-08-26T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fixes Locator to avoid spamming this Error on first project open: <code>Exception: Could not find UdonSharp locator, make sure you have installed U# following the install instructions.</code></li></ul>]]></content>
+        <author>
+            <name>Momo the Monster</name>
+            <uri>https://github.com/momo-the-monster</uri>
+        </author>
+        <category label="release" term="release"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Release 1.0.0b12]]></title>
         <id>release-1.0.0b12</id>
