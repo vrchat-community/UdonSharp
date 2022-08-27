@@ -14,7 +14,7 @@
             <guid>release-1.1.1</guid>
             <pubDate>Fri, 26 Aug 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Changelog]]></description>
-            <content:encoded><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fixes Locator to avoid spamming this Error on first project open: <code>Exception: Could not find UdonSharp locator, make sure you have installed U# following the install instructions.</code></li></ul>]]></content:encoded>
+            <content:encoded><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fixes Locator to avoid spamming this Error on first project open: <code>Exception: Could not find UdonSharp locator, make sure you have installed U# following the install instructions.</code></li><li>Fixes file watcher breaking on non-Windows systems, contributed by anatawa12 (<a href="https://github.com/vrchat-community/UdonSharp/pull/47" target="_blank" rel="noopener noreferrer">https://github.com/vrchat-community/UdonSharp/pull/47</a>)</li></ul>]]></content:encoded>
             <category>release</category>
         </item>
         <item>
