@@ -2,11 +2,24 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://udonsharp.docs.vrchat.com/news</id>
     <title>UdonSharp Blog</title>
-    <updated>2022-10-24T00:00:00.000Z</updated>
+    <updated>2022-10-27T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://udonsharp.docs.vrchat.com/news"/>
     <subtitle>UdonSharp Blog</subtitle>
     <icon>https://udonsharp.docs.vrchat.com/images/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Release 1.1.3]]></title>
+        <id>release-1.1.3</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.1.3"/>
+        <updated>2022-10-27T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Fixes sync check to allow syncing user defined enums again, reported by techanon <a href="https://github.com/vrchat-community/UdonSharp/issues/75" target="_blank" rel="noopener noreferrer">#75</a></li><li>Use explicit SyntaxTree reference in UdonSharpUpgrader to avoid compile issues with a Unity package that has a bad namespace declaration, reported by Vesturo</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release" term="release"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Release 1.1.2]]></title>
         <id>release-1.1.2</id>
