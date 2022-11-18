@@ -583,7 +583,7 @@ namespace UdonSharp.Compiler.Emit
                         
                             conversionMethod = GetNumericConversionMethod(floatType, targetType);
                         }
-						else if (sourceType == GetTypeSymbol(SpecialType.System_Char) && UdonSharpUtils.IsFloatType(targetType.UdonType.SystemType) ||
+                        else if (sourceType == GetTypeSymbol(SpecialType.System_Char) && UdonSharpUtils.IsFloatType(targetType.UdonType.SystemType) ||
                             UdonSharpUtils.IsFloatType(sourceType.UdonType.SystemType) && targetType == GetTypeSymbol(SpecialType.System_Char))
                         {
                             TypeSymbol ushortType = GetTypeSymbol(SpecialType.System_UInt16);
