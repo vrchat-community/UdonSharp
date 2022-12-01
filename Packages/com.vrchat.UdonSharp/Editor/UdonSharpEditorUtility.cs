@@ -88,8 +88,8 @@ namespace UdonSharpEditor
             throw new NotImplementedException();
         }
 
-        internal static Dictionary<MonoScript, UdonSharpProgramAsset> _programAssetLookup;
-        internal static Dictionary<Type, UdonSharpProgramAsset> _programAssetTypeLookup;
+        private static Dictionary<MonoScript, UdonSharpProgramAsset> _programAssetLookup;
+        private static Dictionary<Type, UdonSharpProgramAsset> _programAssetTypeLookup;
         
         private static void InitTypeLookups()
         {
@@ -110,6 +110,12 @@ namespace UdonSharpEditor
                         _programAssetTypeLookup.Add(programAsset.GetClass(), programAsset);
                 }
             }
+        }
+
+        internal static void ResetCaches()
+        {
+            _programAssetLookup = null;
+            _programAssetTypeLookup = null;
         }
 
         private static UdonSharpProgramAsset GetUdonSharpProgramAsset(MonoScript programScript)
@@ -283,8 +289,22 @@ namespace UdonSharpEditor
             {
                 UdonSharpCompilerV1.CompileSync();
             }
+            
+            List<GameObject> prefabRoots = new List<GameObject>();
 
-            GameObject[] prefabRoots = prefabRootEnumerable.ToArray();
+            // Skip upgrades on any intermediate prefab assets which may be considered invalid during the build process, mostly to avoid spamming people's console with logs that may be confusing but also gives slightly faster builds.
+            string intermediatePrefabPath = UdonSharpLocator.IntermediatePrefabPath.Replace("\\", "/");
+            
+            foreach (GameObject prefabRoot in prefabRootEnumerable)
+            {
+                string prefabPath = AssetDatabase.GetAssetPath(prefabRoot);
+                if (prefabPath.StartsWith(intermediatePrefabPath))
+                {
+                    continue;
+                }
+                
+                prefabRoots.Add(prefabRoot);
+            }
 
             bool NeedsNewProxy(UdonBehaviour udonBehaviour)
             {
@@ -437,6 +457,27 @@ namespace UdonSharpEditor
         {
             if (EditorApplication.isPlaying)
                 return;
+
+            if (UdonSharpUtils.DoesUnityProjectHaveCompileErrors())
+            {
+                UdonSharpUtils.LogError("C# scripts have compile errors, cannot run scene upgrade.");
+                return;
+            }
+            
+            UdonSharpProgramAsset.CompileAllCsPrograms();
+            UdonSharpCompilerV1.WaitForCompile();
+                
+            if (UdonSharpProgramAsset.AnyUdonSharpScriptHasError())
+            {
+                // Give chance to compile and resolve errors in case they are fixed already
+                UdonSharpCompilerV1.CompileSync();
+                    
+                if (UdonSharpProgramAsset.AnyUdonSharpScriptHasError())
+                {
+                    UdonSharpUtils.LogError("U# scripts have compile errors, scene upgrade deferred until script errors are resolved.");
+                    return;
+                }
+            }
             
             // Create proxies if they do not exist
             foreach (UdonBehaviour udonBehaviour in behaviours)
@@ -458,6 +499,12 @@ namespace UdonSharpEditor
                     }
                     
                     Type udonSharpBehaviourType = GetUdonSharpBehaviourType(udonBehaviour);
+
+                    if (udonSharpBehaviourType == null)
+                    {
+                        UdonSharpUtils.LogError($"Class script referenced by program asset '{udonBehaviour.programSource}' has no Type", udonBehaviour.programSource);
+                        continue;
+                    }
 
                     if (!udonSharpBehaviourType.IsSubclassOf(typeof(UdonSharpBehaviour)))
                     {
@@ -918,6 +965,9 @@ namespace UdonSharpEditor
 
             UdonSharpProgramAsset programAsset = GetUdonSharpProgramAsset(proxy);
             
+            if (programAsset == null)
+                throw new InvalidOperationException($"Cannot run serialization on U# behaviour '{proxy}', the U# program asset on this component is null. Try restarting Unity and if problems persist, verify that you have a UdonSharpProgramAsset with the script '{proxy.GetType()}' assigned to it.");
+
             if (programAsset.ScriptVersion < UdonSharpProgramVersion.CurrentVersion)
                 throw new InvalidOperationException($"Cannot run serialization on U# behaviour '{proxy}' with outdated script version, wait until program assets have compiled.");
 
@@ -958,7 +1008,10 @@ namespace UdonSharpEditor
                 return;
 
             UdonSharpProgramAsset programAsset = GetUdonSharpProgramAsset(proxy);
-            
+
+            if (programAsset == null)
+                throw new InvalidOperationException($"Cannot run serialization on U# behaviour '{proxy}', the U# program asset on this component is null. Try restarting Unity and if problems persist, verify that you have a UdonSharpProgramAsset with the script '{proxy.GetType()}' assigned to it.");
+
             if (programAsset.ScriptVersion < UdonSharpProgramVersion.CurrentVersion)
                 throw new InvalidOperationException($"Cannot run serialization on U# behaviour '{proxy}' with outdated script version, wait until program assets have compiled.");
 

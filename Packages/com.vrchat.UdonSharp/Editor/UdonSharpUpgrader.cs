@@ -18,6 +18,8 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace UdonSharpEditor
 {
+    using SyntaxTree = Microsoft.CodeAnalysis.SyntaxTree;
+    
     [InitializeOnLoad]
     internal class UdonSharpUpgrader
     {
@@ -39,6 +41,7 @@ namespace UdonSharpEditor
         {
             UdonSharpProgramAsset.GetAllUdonSharpPrograms().ForEach(QueueUpgrade);
             UdonSharpEditorCache.Instance.QueueUpgradePass();
+            UdonSharpEditorManager._didSceneUpgrade = false;
         }
 
         private static bool _needsProgramUpgradePass;

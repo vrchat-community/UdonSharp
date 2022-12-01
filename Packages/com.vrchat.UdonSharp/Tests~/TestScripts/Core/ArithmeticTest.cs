@@ -33,6 +33,7 @@ namespace UdonSharp.Tests
             BitwiseNot();
             UdonBehaviourFieldCompoundAssignment();
             NullEquals();
+            CastCharToFloat();
         }
 
         void IntBinaryOps()
@@ -347,9 +348,22 @@ namespace UdonSharp.Tests
             double testDouble = 4.7f;
             truncatedValue = (int)testFloat;
             tester.TestAssertion("Float to Int Truncation", truncatedValue == 4);
-        
+
             truncatedValue = (int)testDouble;
             tester.TestAssertion("Double to Int Truncation", truncatedValue == 4);
+
+            float testNegativeFloat = -4.7f;
+            double testNegativeDouble = -4.7;
+            decimal testNegativeDecimal = -4.7m;
+
+            truncatedValue = (int)testNegativeFloat;
+            tester.TestAssertion("Negative Float to Int Truncation", truncatedValue == -4);
+
+            truncatedValue = (int)testNegativeDouble;
+            tester.TestAssertion("Negative Double to Int Truncation", truncatedValue == -4);
+
+            truncatedValue = (int)testNegativeDecimal;
+            tester.TestAssertion("Negative Decimal to Int Truncation", truncatedValue == -4);
         }
         
         void UintBitOps()
@@ -391,6 +405,18 @@ namespace UdonSharp.Tests
             
             s += stringChar;
             tester.TestAssertion("Char addition non const", s == "abcdef42ab");
+            
+            s += 1;
+            tester.TestAssertion("Int addition", s == "abcdef42ab1");
+
+            s = "ab";
+            s += gameObject;
+            tester.TestAssertion("Object addition", s == "ab" + gameObject.ToString());
+            
+            object o = "ab";
+            o = o + "cd";
+            o += "ef";
+            tester.TestAssertion("String Op +(object, string)", o.ToString() == "abcdef");
         }
         
         void BitwiseNot()
@@ -439,6 +465,21 @@ namespace UdonSharp.Tests
         {
             tester.TestAssertion("Null equals null", null == null);
             tester.TestAssertion("Null doesn't equal null", !(null != null));
+        }
+        
+        void CastCharToFloat()
+        {
+            float af = 97.5f;
+            double ad = 98.5;
+            decimal am = 99.5m;
+            tester.TestAssertion("Cast float to char", (char)af == 'a');
+            tester.TestAssertion("Cast double to char", (char)ad == 'b');
+            tester.TestAssertion("Cast decimal to char", (char)am == 'c');
+
+            char c = 'a';
+            tester.TestAssertion("Cast char to float", c == 97f);
+            tester.TestAssertion("Cast char to double", c == 97.0);
+            tester.TestAssertion("Cast char to decimal", c == 97m);
         }
     }
 }

@@ -63,9 +63,9 @@ namespace UdonSharpEditor
 
             HashSet<UdonBehaviour> allBehaviours = new HashSet<UdonBehaviour>();
 
-            foreach (var rootObject in rootObjects)
+            foreach (GameObject rootObject in rootObjects)
             {
-                foreach (var behaviour in rootObject.GetComponentsInChildren<UdonSharpBehaviour>(true))
+                foreach (UdonSharpBehaviour behaviour in rootObject.GetComponentsInChildren<UdonSharpBehaviour>(true))
                 {
                     try
                     {
@@ -91,9 +91,9 @@ namespace UdonSharpEditor
             if (!BuildPipeline.isBuildingPlayer)
                 return;
 
-            foreach (var rootObject in rootObjects)
+            foreach (GameObject rootObject in rootObjects)
             {
-                foreach (var behaviour in rootObject.GetComponentsInChildren<UdonSharpBehaviour>(true))
+                foreach (UdonSharpBehaviour behaviour in rootObject.GetComponentsInChildren<UdonSharpBehaviour>(true))
                 {
                     Object.DestroyImmediate(behaviour);
                 }
@@ -733,7 +733,7 @@ namespace UdonSharpEditor
             UpdateSerializedProgramAssets(allBehaviours);
         }
 
-        private static bool _didSceneUpgrade;
+        internal static bool _didSceneUpgrade;
         
         private static void OnEditorUpdate()
         {
@@ -745,8 +745,14 @@ namespace UdonSharpEditor
 
             if (!_didSceneUpgrade && !EditorApplication.isCompiling && !EditorApplication.isUpdating)
             {
-                UdonSharpEditorUtility.UpgradeSceneBehaviours(GetAllUdonBehaviours());
-                _didSceneUpgrade = true;
+                try
+                {
+                    UdonSharpEditorUtility.UpgradeSceneBehaviours(GetAllUdonBehaviours());
+                }
+                finally
+                {
+                    _didSceneUpgrade = true;
+                }
             }
         }
 
@@ -944,7 +950,7 @@ namespace UdonSharpEditor
                 if (!(unityObject is Component || unityObject is GameObject))
                     continue;
                 
-                if (!PrefabUtility.IsPartOfAnyPrefab(unityObject))
+                if (!PrefabUtility.IsPartOfPrefabAsset(unityObject))
                     continue;
 
                 var prefabAssetType = PrefabUtility.GetPrefabAssetType(unityObject);
@@ -1467,9 +1473,9 @@ namespace UdonSharpEditor
                         continue;
                     }
 
-                    if (scriptAsset.sourceCsScript.GetType() != proxyType)
+                    if (scriptAsset.sourceCsScript.GetClass() != proxyType)
                     {
-                        UdonSharpUtils.LogError($"Script asset '{scriptAsset}' found for type '{proxyType}' actually has type '{scriptAsset.sourceCsScript.GetType()}' this is not valid.", proxy);
+                        UdonSharpUtils.LogError($"Script asset '{scriptAsset}' found for type '{proxyType}' actually has type '{scriptAsset.sourceCsScript.GetClass()}' this is not valid.", proxy);
                         continue;
                     }
                     
@@ -1599,9 +1605,17 @@ namespace UdonSharpEditor
                 return true;
 
             UpgradeAssetsIfNeeded();
-            
-            if (!EditorApplication.isCompiling && !EditorApplication.isUpdating)
-                UdonSharpEditorUtility.UpgradeSceneBehaviours(GetAllUdonBehaviours());
+
+            try
+            {
+                if (!EditorApplication.isCompiling && !EditorApplication.isUpdating)
+                    UdonSharpEditorUtility.UpgradeSceneBehaviours(GetAllUdonBehaviours());
+            }
+            catch (Exception e)
+            {
+                UdonSharpUtils.LogError($"Hit exception while attempting to upgrade scene behaviours: {e}");
+                return true;
+            }
             
             return false;
         }
@@ -1754,6 +1768,7 @@ namespace UdonSharpEditor
                         Directory.CreateDirectory(dirPath);
 
                     GameObject prefabInstance = Object.Instantiate(prefabRoot, instantiatedObjectRoot.transform);
+                    prefabInstance.name = prefabRoot.name;
                     
                     // Update the data on the U# behaviours
                     foreach (UdonSharpBehaviour behaviour in prefabInstance.GetComponentsInChildren<UdonSharpBehaviour>(true))
@@ -1816,19 +1831,21 @@ namespace UdonSharpEditor
 
                 foreach (UdonBehaviour behaviour in prefabRoot.GetComponentsInChildren<UdonBehaviour>(true))
                 {
-                    List<Object> unityObjectList = (List<Object>)_serializedObjectReferencesField.GetValue(behaviour);
+                    SerializedObject behaviourObj = new SerializedObject(behaviour);
 
-                    if (unityObjectList == null)
-                        continue;
-
-                    for (int i = 0; i < unityObjectList.Count; ++i)
+                    SerializedProperty iterator = behaviourObj.GetIterator();
+                    while (iterator.Next(true))
                     {
-                        if (mappingManager.TryRemapObject(unityObjectList[i], out var newObject))
+                        if (iterator.propertyType == SerializedPropertyType.ObjectReference &&
+                            iterator.objectReferenceValue != null && 
+                            mappingManager.TryRemapObject(iterator.objectReferenceValue, out Object newObject))
                         {
-                            unityObjectList[i] = newObject;
+                            iterator.objectReferenceValue = newObject;
                             prefabModified = true;
                         }
                     }
+                    
+                    behaviourObj.ApplyModifiedPropertiesWithoutUndo();
                 }
 
                 if (stripBehavioursForBuild)

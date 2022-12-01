@@ -214,7 +214,14 @@ namespace UdonSharp.Compiler
 
             return paths;
         }
-
+        
+        internal static void ResetAssemblyCaches()
+        {
+            _scriptPathCache.Clear();
+            _udonSharpAssemblyNames = null;
+            CompilerUdonInterface.ResetAssemblyCache(); 
+        }
+        
         public static IEnumerable<MonoScript> GetAllFilteredScripts(bool isEditorBuild)
         {
             return GetAllFilteredSourcePaths(isEditorBuild).Select(AssetDatabase.LoadAssetAtPath<MonoScript>).Where(e => e != null).ToArray();
@@ -351,7 +358,7 @@ namespace UdonSharp.Compiler
             string[] paramNames = new string[methodSymbol.Parameters.Length];
             string returnName = null;
             
-            if (CompilerUdonInterface.IsUdonEvent(methodName))
+            if (CompilerUdonInterface.IsUdonEvent(methodSymbol))
             {
                 var paramArgs = CompilerUdonInterface.GetUdonEventArgs(methodName);
                 methodName = CompilerUdonInterface.GetUdonEventName(methodName);

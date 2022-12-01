@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 using UdonSharp.Compiler.Symbols;
 using UdonSharpEditor;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using VRC.Udon.Common.Interfaces;
 using VRC.Udon.Editor;
@@ -63,6 +64,11 @@ namespace UdonSharp.Compiler.Udon
         //     AssemblyCacheInit();
         //     CacheInit();
         // }
+
+        internal static void ResetAssemblyCache()
+        {
+            _assemblyInitRan = false;
+        }
 
         internal static void CacheInit()
         {
@@ -137,15 +143,15 @@ namespace UdonSharp.Compiler.Udon
 
                 foreach (string definitionPath in assemblyDefinitionPaths)
                 {
-                    var assemblyDefinition = AssetDatabase.LoadAssetAtPath<UdonSharpAssemblyDefinition>(definitionPath);
+                    UdonSharpAssemblyDefinition assemblyDefinition = AssetDatabase.LoadAssetAtPath<UdonSharpAssemblyDefinition>(definitionPath);
                     if (assemblyDefinition == null || assemblyDefinition.sourceAssembly == null) 
                         continue;
                     
                     assemblyDefinitions.Add(assemblyDefinition);
                     
-                    var sourceAssembly = assemblyDefinition.sourceAssembly;
+                    AssemblyDefinitionAsset sourceAssembly = assemblyDefinition.sourceAssembly;
 
-                    foreach (var assembly in allAssemblies)
+                    foreach (System.Reflection.Assembly assembly in allAssemblies)
                     {
                         if (assembly.IsDynamic || assembly.Location.Length <= 0 ||
                             assembly.Location.StartsWith("data")) 
@@ -158,16 +164,25 @@ namespace UdonSharp.Compiler.Udon
                         break;
                     }
                 }
-                
-                assemblies.Add(allAssemblies.First(e => e.GetName().Name == "Assembly-CSharp"));
+
+                System.Reflection.Assembly cSharpAssembly = allAssemblies.FirstOrDefault(e => e.GetName().Name == "Assembly-CSharp");
+
+                if (cSharpAssembly != null)
+                {
+                    assemblies.Add(cSharpAssembly);
+                }
+                else
+                {
+                    UdonSharpUtils.LogWarning("No Assembly-CSharp assembly found");
+                }
 
                 UdonSharpAssemblies = assemblies.ToImmutableArray();
                 UdonSharpAssemblyDefinitions = assemblyDefinitions.ToImmutableArray();
-                var udonSharpAssemblySet = new HashSet<System.Reflection.Assembly>(_udonSharpAssemblies);
+                HashSet<System.Reflection.Assembly> udonSharpAssemblySet = new HashSet<System.Reflection.Assembly>(_udonSharpAssemblies);
 
                 HashSet<System.Reflection.Assembly> externAssemblies = new HashSet<System.Reflection.Assembly>();
 
-                foreach (var assembly in allAssemblies)
+                foreach (System.Reflection.Assembly assembly in allAssemblies)
                 {
                     if (assembly.IsDynamic || assembly.Location.Length <= 0 || 
                         assembly.Location.StartsWith("data")) 
@@ -218,10 +233,19 @@ namespace UdonSharp.Compiler.Udon
             return ExternAssemblySet.Contains(type.Assembly);
         }
 
-        public static bool IsUdonEvent(string eventName)
+        public static bool IsUdonEvent(MethodSymbol method)
         {
             CacheInit();
-            return _builtinEventLookup.ContainsKey(eventName);
+            
+            // ReSharper disable once InvokeAsExtensionMethod
+            if (_builtinEventLookup.ContainsKey(method.Name) &&
+                !method.Parameters.Any(e => e.IsByRef) && // Builtin events should never have out/ref params
+                Enumerable.SequenceEqual(method.Parameters.Select(e => e.Type.UdonType.SystemType), GetUdonEventArgs(method.Name).Select(e => e.Item2)))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public static string GetUdonEventName(string eventName)

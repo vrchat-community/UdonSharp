@@ -93,6 +93,7 @@ Assets/UdonSharp.meta
 # Package stuff
 Assets/Resources
 Assets/Resources.meta
+Assets/Samples
 
 Packages/com.vrchat.vrcsdk3
 
@@ -109,10 +110,5 @@ Packages/com.vrchat.UdonSharp/Editor/obj.meta
 
 Tools/DocFx/obj/
 Docs/Published
-
-# Copied Images
-Tools/Docusaurus/static/images/
-
-Tools/Docusaurus/docs/
 
 Packages/com.vrchat.UdonSharp/Editor/BuildUtilities/obj/

@@ -12,6 +12,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRC.Udon;
+using VRC.Udon.Editor;
 using VRC.Udon.Serialization.OdinSerializer;
 using Object = UnityEngine.Object;
 
@@ -73,7 +74,7 @@ namespace UdonSharpEditor
 
     // [CustomEditor(typeof(UdonSharpBehaviour), true)]
     // [CanEditMultipleObjects]
-    // [CustomUdonBehaviourInspector(typeof(UdonSharpProgramAsset))]
+    [CustomUdonBehaviourInspector(typeof(UdonSharpProgramAsset))]
     internal class UdonSharpBehaviourEditor : Editor
     {
         [MenuItem("Assets/Create/U# Script", false, 5)]
@@ -175,24 +176,35 @@ namespace UdonSharpEditor
                 // Needs setup
                 if (udonSharpBehaviour == null)
                 {
-                    UdonSharpEditorUtility.SetIgnoreEvents(true);
-                
-                    try
+                    // In particularly bad cases, Unity can drop the script data and make the U# behaviour effectively null temporarily. 
+                    // We do not want to create additional components in this case since it's possible for users to recover the original state sometimes
+                    // So we only run setup if the version has not already been set since UdonSharpBehaviours without versions can be created by populating a U# program asset on a UdonBehaviour
+                    if (UdonSharpEditorUtility.GetBehaviourVersion(targetBehaviour) < UdonSharpBehaviourVersion.V1)
                     {
-                        udonSharpBehaviour = (UdonSharpBehaviour)Undo.AddComponent(targetBehaviour.gameObject, UdonSharpEditorUtility.GetUdonSharpBehaviourType(targetBehaviour));
+                        UdonSharpEditorUtility.SetIgnoreEvents(true);
+                    
+                        try
+                        {
+                            udonSharpBehaviour = (UdonSharpBehaviour)Undo.AddComponent(targetBehaviour.gameObject, UdonSharpEditorUtility.GetUdonSharpBehaviourType(targetBehaviour));
 
-                        UdonSharpEditorUtility.SetBackingUdonBehaviour(udonSharpBehaviour, targetBehaviour);
-                        UdonSharpEditorUtility.MoveComponentRelativeToComponent(udonSharpBehaviour, targetBehaviour, true);
-                        UdonSharpEditorUtility.SetBehaviourVersion(targetBehaviour, UdonSharpBehaviourVersion.CurrentVersion);
-                        UdonSharpEditorUtility.SetSceneBehaviourUpgraded(targetBehaviour);
+                            UdonSharpEditorUtility.SetBackingUdonBehaviour(udonSharpBehaviour, targetBehaviour);
+                            UdonSharpEditorUtility.MoveComponentRelativeToComponent(udonSharpBehaviour, targetBehaviour, true);
+                            UdonSharpEditorUtility.SetBehaviourVersion(targetBehaviour, UdonSharpBehaviourVersion.CurrentVersion);
+                            UdonSharpEditorUtility.SetSceneBehaviourUpgraded(targetBehaviour);
+                        }
+                        finally
+                        {
+                            UdonSharpEditorUtility.SetIgnoreEvents(false);
+                        }
                     }
-                    finally
+                    else
                     {
-                        UdonSharpEditorUtility.SetIgnoreEvents(false);
+                        UdonSharpUtils.LogWarning($"Inspected UdonBehaviour '{targetBehaviour.name}' does not have an associated U# behaviour, but has a version that indicates it should.", targetBehaviour);
                     }
                 }
                 
-                udonSharpBehaviour.enabled = targetBehaviour.enabled;
+                if (udonSharpBehaviour != null)
+                    udonSharpBehaviour.enabled = targetBehaviour.enabled;
                 
             #if !UDONSHARP_DEBUG
                 targetBehaviour.hideFlags = HideFlags.HideInInspector;
@@ -566,9 +578,11 @@ namespace UdonSharpEditor
             // A little jank atm, can bleed into some inspectors like the material inspector that Unity adds in some cases
             _rootInspectorElement.RegisterCallback<AttachToPanelEvent>(evt =>
             {
-                InspectorElement inspectorElement = _rootInspectorElement.GetFirstAncestorOfType<InspectorElement>();
-                VisualElement editorElement = inspectorElement.parent;
-        
+                VisualElement editorElement = _rootInspectorElement.GetFirstAncestorOfType<InspectorElement>()?.parent;
+
+                if (editorElement == null)
+                    return;
+                
                 VisualElement bar = new VisualElement
                 {
                     name = BAR_NAME,
@@ -600,6 +614,27 @@ namespace UdonSharpEditor
         
                 editorElement.Add(bar);
             });
+            
+            _rootInspectorElement.RegisterCallback<DetachFromPanelEvent>(evt =>
+            {
+                VisualElement editorElement = _rootInspectorElement.GetFirstAncestorOfType<InspectorElement>()?.parent;
+
+                if (editorElement == null)
+                    return;
+
+                List<VisualElement> removeList = new List<VisualElement>();
+
+                foreach (VisualElement child in editorElement.Children())
+                {
+                    if (child.name == BAR_NAME)
+                        removeList.Add(child);
+                }
+
+                foreach (VisualElement element in removeList)
+                {
+                    editorElement.Remove(element);
+                }
+            });
 
             return _rootInspectorElement;
         }
@@ -628,7 +663,7 @@ namespace UdonSharpEditor
                 {
                     EditorGUILayout.HelpBox("Selected U# behaviour program source reference is not valid.", MessageType.Warning);
                     
-                    UdonSharpProgramAsset programAsset = UdonSharpEditorUtility.GetUdonSharpProgramAsset((UdonBehaviour)target);
+                    UdonSharpProgramAsset programAsset = UdonSharpEditorUtility.GetUdonSharpProgramAsset((UdonSharpBehaviour)target);
 
                     if (programAsset && 
                         programAsset.sourceCsScript == null &&
@@ -647,7 +682,7 @@ namespace UdonSharpEditor
                 return CreateIMGUIInspector(() =>
                 {
                     EditorGUILayout.HelpBox("Multi-object editing not supported.", MessageType.None);
-                });
+                }, true);
             }
             
             VisualElement userEditorElement = _userEditor.CreateInspectorGUI();
@@ -767,7 +802,7 @@ namespace UdonSharpEditor
                 // Fallback handling for jagged array drawer
                 List<FieldInfo> jaggedArrayFields = null;
 
-                foreach (FieldInfo field in target.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
+                foreach (FieldInfo field in target.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
                 {
                     if (UdonSharpUtils.IsUserJaggedArray(field.FieldType) && 
                         field.IsDefined(typeof(OdinSerializeAttribute)) && // We only want Odin serialized fields since other jagged arrays will not be saved
