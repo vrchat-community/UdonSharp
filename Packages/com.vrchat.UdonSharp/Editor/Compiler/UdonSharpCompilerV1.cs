@@ -282,7 +282,7 @@ namespace UdonSharp.Compiler
             {
                 if (udonSharpProgram.sourceCsScript == null)
                 {
-                    UdonSharpUtils.LogError($"Source C# script on {udonSharpProgram} is null", udonSharpProgram);
+                    UdonSharpUtils.LogError($"Source C# script on {udonSharpProgram} is null. Add the source C# script, or delete {udonSharpProgram}.", udonSharpProgram);
                     hasError = true;
                     continue;
                 }
@@ -291,7 +291,7 @@ namespace UdonSharp.Compiler
                 
                 if (string.IsNullOrEmpty(assetPath))
                 {
-                    UdonSharpUtils.LogError($"Source C# script on {udonSharpProgram} is null", udonSharpProgram);
+                    UdonSharpUtils.LogError($"Source C# script on {udonSharpProgram} is null. Add the source C# script, or delete {udonSharpProgram}.", udonSharpProgram);
                     hasError = true;
                     continue;
                 }
