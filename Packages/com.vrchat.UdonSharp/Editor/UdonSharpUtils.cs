@@ -329,6 +329,13 @@ namespace UdonSharp
             Debug.LogError($"[<color=#FF00FF>UdonSharp</color>] {message}", context);
         }
 
+        public static void LogError(object message, UdonSharpProgramAsset context)
+        {
+            var asset = AssetDatabase.FindAssets($"t:{nameof(UdonSharpProgramAsset)} {context.name}");
+            if (asset == null || asset[0] == null) LogError(message, context);
+            else Debug.LogError($"[<color=#FF00FF>UdonSharp</color>] {message}", AssetDatabase.LoadAssetAtPath<UdonSharpProgramAsset>(AssetDatabase.GUIDToAssetPath(asset[0])));
+        }
+
         private static readonly MethodInfo _displayProgressBar = typeof(Editor).Assembly.GetTypes().FirstOrDefault(e => e.Name == "AsyncProgressBar")?.GetMethod("Display");
         private static readonly MethodInfo _clearProgressBar = typeof(Editor).Assembly.GetTypes().FirstOrDefault(e => e.Name == "AsyncProgressBar")?.GetMethod("Clear");
         
