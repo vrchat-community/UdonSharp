@@ -281,8 +281,8 @@ namespace UdonSharp.Compiler.Udon
         public static string GetUdonTypeName(TypeSymbol externSymbol)
         {
             if (externSymbol is TypeParameterSymbol)
-                return "T";
-            
+                return SanitizeTypeName(externSymbol.IsArray ? "T[]" : "T");
+
             return GetUdonTypeName(externSymbol.UdonType.SystemType);
         }
 
@@ -348,7 +348,7 @@ namespace UdonSharp.Compiler.Udon
             
                 foreach (IParameterSymbol parameter in parameters)
                 {
-                    paramStr += $"_{GetUdonTypeName(context.GetTypeSymbol(parameter.Type))}";
+                    paramStr += $"_{GetUdonTypeName(context.GetTypeSymbolWithoutRedirect(parameter.Type))}";
                     if (parameter.RefKind != RefKind.None)
                         paramStr += "Ref";
                 }
