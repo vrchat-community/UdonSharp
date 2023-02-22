@@ -21,6 +21,19 @@
         <category label="release" term="release"/>
     </entry>
     <entry>
+        <title type="html"><![CDATA[Release 1.1.7]]></title>
+        <id>release-1.1.7</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.1.7"/>
+        <updated>2022-12-02T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Changelog]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Adds events for image loader and text loader <a href="https://github.com/vrchat-community/UdonSharp/pull/96" target="_blank" rel="noopener noreferrer">#96</a></li><li>Add error for when scripts don't have program assets during scene scanning</li><li>Catch serialization errors when upgrading scene behaviours</li></ul>]]></content>
+        <author>
+            <name>Merlin</name>
+            <uri>https://github.com/merlinvr</uri>
+        </author>
+        <category label="release" term="release"/>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Release 1.1.5]]></title>
         <id>release-1.1.5</id>
         <link href="https://udonsharp.docs.vrchat.com/news/release-1.1.5"/>
