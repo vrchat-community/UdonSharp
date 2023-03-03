@@ -4,10 +4,19 @@
         <title>UdonSharp Blog</title>
         <link>https://udonsharp.docs.vrchat.com/news</link>
         <description>UdonSharp Blog</description>
-        <lastBuildDate>Fri, 02 Dec 2022 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 23 Feb 2023 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[Release 1.1.7]]></title>
+            <link>https://udonsharp.docs.vrchat.com/news/release-1.1.7</link>
+            <guid>release-1.1.7</guid>
+            <pubDate>Thu, 23 Feb 2023 00:00:00 GMT</pubDate>
+            <description><![CDATA[Changelog]]></description>
+            <content:encoded><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Adds events for image loader and text loader <a href="https://github.com/vrchat-community/UdonSharp/pull/96" target="_blank" rel="noopener noreferrer">#96</a></li><li>Add error for when scripts don't have program assets during scene scanning</li><li>Catch serialization errors when upgrading scene behaviours</li></ul>]]></content:encoded>
+            <category>release</category>
+        </item>
         <item>
             <title><![CDATA[Release 1.1.6]]></title>
             <link>https://udonsharp.docs.vrchat.com/news/release-1.1.6</link>
@@ -15,15 +24,6 @@
             <pubDate>Fri, 02 Dec 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Changelog]]></description>
             <content:encoded><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Upgrading nested prefabs from U# 0.x projects should now be handled properly <a href="https://github.com/vrchat-community/UdonSharp/pull/82" target="_blank" rel="noopener noreferrer">#82</a></li><li>Fixes for float -&gt; int truncation and precision contributed by <a href="https://github.com/ureishi" target="_blank" rel="noopener noreferrer">@ureishi</a> <a href="https://github.com/vrchat-community/UdonSharp/pull/79" target="_blank" rel="noopener noreferrer">#79</a></li><li>Fix for casts from <code>char</code> -&gt; float types contributed by <a href="https://github.com/ureishi" target="_blank" rel="noopener noreferrer">@ureishi</a> <a href="https://github.com/vrchat-community/UdonSharp/pull/80" target="_blank" rel="noopener noreferrer">#80</a></li><li>Fixes for string composite assignment contributed by <a href="https://github.com/ureishi" target="_blank" rel="noopener noreferrer">@ureishi</a> <a href="https://github.com/vrchat-community/UdonSharp/pull/29" target="_blank" rel="noopener noreferrer">#29</a></li><li>Fixes for equality between two null constants contributed by <a href="https://github.com/ureishi" target="_blank" rel="noopener noreferrer">@ureishi</a> <a href="https://github.com/vrchat-community/UdonSharp/pull/30" target="_blank" rel="noopener noreferrer">#30</a></li><li>Fix for checking event compatibility with built-in events to not only check event name, this would cause issues if you tried to register an event without the correct parameters for a built-in event.</li><li>Fix to show jagged array fields if they are marked with OdinSerialize, but private</li><li>Adds Curl errors that Unity now likes to throw with the menu updates to the event filter for log watcher</li><li>Fix for inter-prefrab references on instantiated prefabs not applying correctly in some cases, because Unity</li><li>Prevent running upgrade process on intermediate build prefabs</li><li>Workaround for a case where Unity thinks an object is a prefab when it isn't during the prefab build process which could cause the process to fail</li></ul>]]></content:encoded>
-            <category>release</category>
-        </item>
-        <item>
-            <title><![CDATA[Release 1.1.7]]></title>
-            <link>https://udonsharp.docs.vrchat.com/news/release-1.1.7</link>
-            <guid>release-1.1.7</guid>
-            <pubDate>Fri, 02 Dec 2022 00:00:00 GMT</pubDate>
-            <description><![CDATA[Changelog]]></description>
-            <content:encoded><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="changelog">Changelog<a class="hash-link" href="#changelog" title="Direct link to heading">​</a></h2><ul><li>Adds events for image loader and text loader <a href="https://github.com/vrchat-community/UdonSharp/pull/96" target="_blank" rel="noopener noreferrer">#96</a></li><li>Add error for when scripts don't have program assets during scene scanning</li><li>Catch serialization errors when upgrading scene behaviours</li></ul>]]></content:encoded>
             <category>release</category>
         </item>
         <item>
