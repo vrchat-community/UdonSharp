@@ -61,10 +61,16 @@ namespace UdonSharp.Compiler.Symbols
                 TypeSymbol parameterType = context.GetTypeSymbol(methodSymbol.Parameters[0].Type);
 
                 BuiltinOperatorType operatorType;
-                if (methodSymbol.Name == "op_Equality")
-                    operatorType = BuiltinOperatorType.Equality;
-                else
-                    operatorType = BuiltinOperatorType.Inequality;
+                switch (methodSymbol.Name)
+                {
+                    case "op_Equality": operatorType = BuiltinOperatorType.Equality; break;
+                    case "op_Inequality": operatorType = BuiltinOperatorType.Inequality; break;
+                    case "op_GreaterThan": operatorType = BuiltinOperatorType.GreaterThan; break;
+                    case "op_LessThan": operatorType = BuiltinOperatorType.LessThan; break;
+                    case "op_GreaterThanOrEqual": operatorType = BuiltinOperatorType.GreaterThanOrEqual; break;
+                    case "op_LessThanOrEqual": operatorType = BuiltinOperatorType.LessThanOrEqual; break;
+                    default: throw new NotSupportedException($"Operator {methodSymbol.Name} for enum is not currently supported by U#", methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax()?.GetLocation());
+                }
                 
                 return new ExternSynthesizedOperatorSymbol(operatorType, parameterType.UdonType, context);
             }
