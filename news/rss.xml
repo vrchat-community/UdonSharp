@@ -4,10 +4,19 @@
         <title>UdonSharp Blog</title>
         <link>https://udonsharp.docs.vrchat.com/news</link>
         <description>UdonSharp Blog</description>
-        <lastBuildDate>Thu, 23 Feb 2023 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 04 May 2023 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[Release 1.1.8]]></title>
+            <link>https://udonsharp.docs.vrchat.com/news/release-1.1.8</link>
+            <guid>https://udonsharp.docs.vrchat.com/news/release-1.1.8</guid>
+            <pubDate>Thu, 04 May 2023 00:00:00 GMT</pubDate>
+            <description><![CDATA[Summary]]></description>
+            <content:encoded><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="summary">Summary<a href="#summary" class="hash-link" aria-label="Direct link to Summary" title="Direct link to Summary">​</a></h2><p>Compatibility with SDK 3.2.0</p><h3 class="anchor anchorWithStickyNavbar_LWe7" id="changes">Changes<a href="#changes" class="hash-link" aria-label="Direct link to Changes" title="Direct link to Changes">​</a></h3><ul><li>Updates the package manifest to use <code>^3.1.x</code> instead of <code>3.1.x</code> to enable compatibility with the just-released 3.2.0 and beyond.</li></ul>]]></content:encoded>
+            <category>release</category>
+        </item>
         <item>
             <title><![CDATA[Release 1.1.7]]></title>
             <link>https://udonsharp.docs.vrchat.com/news/release-1.1.7</link>
