@@ -42,7 +42,7 @@ namespace UdonSharp.Compiler.Binder
 
             // Strip unary plus operator
             if (node.Kind() == SyntaxKind.UnaryPlusExpression)
-                return Visit((node as PrefixUnaryExpressionSyntax)?.Operand);
+                return VisitExpression((node as PrefixUnaryExpressionSyntax)?.Operand);
             
             Symbol nodeSymbol = GetSymbol(node);
             if (nodeSymbol is TypeSymbol)
