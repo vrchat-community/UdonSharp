@@ -2,11 +2,24 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://udonsharp.docs.vrchat.com/news</id>
     <title>UdonSharp Blog</title>
-    <updated>2023-05-04T00:00:00.000Z</updated>
+    <updated>2023-06-29T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://udonsharp.docs.vrchat.com/news"/>
     <subtitle>UdonSharp Blog</subtitle>
     <icon>https://udonsharp.docs.vrchat.com/images/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Release 1.1.9-beta.1]]></title>
+        <id>https://udonsharp.docs.vrchat.com/news/release-1.1.9-beta.1</id>
+        <link href="https://udonsharp.docs.vrchat.com/news/release-1.1.9-beta.1"/>
+        <updated>2023-06-29T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Summary]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="summary">Summary<a href="#summary" class="hash-link" aria-label="Direct link to Summary" title="Direct link to Summary">​</a></h2><p>New avatar event definitions</p><h3 class="anchor anchorWithStickyNavbar_LWe7" id="changes">Changes<a href="#changes" class="hash-link" aria-label="Direct link to Changes" title="Direct link to Changes">​</a></h3><ul><li>Added avatar virtual functions for code completion</li></ul>]]></content>
+        <author>
+            <name>Momo the Monster</name>
+            <uri>https://github.com/momo-the-monster</uri>
+        </author>
+        <category label="release beta" term="release beta"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Release 1.1.8]]></title>
         <id>https://udonsharp.docs.vrchat.com/news/release-1.1.8</id>
