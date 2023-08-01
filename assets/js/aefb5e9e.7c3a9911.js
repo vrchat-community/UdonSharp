@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkclient_sim=self.webpackChunkclient_sim||[]).push([[7771],{1859:e=>{e.exports=JSON.parse('{"permalink":"/news/tags/release-beta/page/2","page":2,"postsPerPage":10,"totalPages":2,"totalCount":12,"previousPage":"/news/tags/release-beta","blogDescription":"Blog","blogTitle":"Blog"}')}}]);
