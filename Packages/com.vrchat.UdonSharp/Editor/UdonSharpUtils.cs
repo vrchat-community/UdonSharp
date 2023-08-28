@@ -329,17 +329,34 @@ namespace UdonSharp
             Debug.LogError($"[<color=#FF00FF>UdonSharp</color>] {message}", context);
         }
 
+        #if !UNITY_2022_3_OR_NEWER
         private static readonly MethodInfo _displayProgressBar = typeof(Editor).Assembly.GetTypes().FirstOrDefault(e => e.Name == "AsyncProgressBar")?.GetMethod("Display");
         private static readonly MethodInfo _clearProgressBar = typeof(Editor).Assembly.GetTypes().FirstOrDefault(e => e.Name == "AsyncProgressBar")?.GetMethod("Clear");
+        #endif
+        private static int _progressId;
         
         public static void ShowAsyncProgressBar(string text, float progress)
         {
+            #if UNITY_2022_3_OR_NEWER
+            if (_progressId == 0)
+            {
+                _progressId = Progress.Start("U# Compile", "Compiling UdonSharp scripts...");
+            }
+            Progress.Report(_progressId, progress, text);
+            #else
             _displayProgressBar.Invoke(null, new object[] {text, progress});
+            #endif
         }
 
         public static void ClearAsyncProgressBar()
         {
+            #if UNITY_2022_3_OR_NEWER
+            if (_progressId == 0) return;
+            Progress.Remove(_progressId);
+            _progressId = 0;
+            #else
             _clearProgressBar.Invoke(null, null);
+            #endif
         }
 
         public static void LogRuntimeError(string message, string prefix, string filePath, int line, int character)
