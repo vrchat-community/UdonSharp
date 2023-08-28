@@ -937,6 +937,16 @@ namespace Merlin
             if (findMethod == null)
             {
                 // Rather not reinvent the wheel considering this function calls different functions depending on the number of args the event has...
+                #if UNITY_2022_3_OR_NEWER
+                findMethod = eventObject.GetType().GetMethod("FindMethod", BindingFlags.NonPublic | BindingFlags.Instance, null,
+                    new System.Type[] {
+                        typeof(string),
+                        typeof(System.Type),
+                        typeof(PersistentListenerMode),
+                        typeof(System.Type)
+                    },
+                    null);
+                #else
                 findMethod = eventObject.GetType().GetMethod("FindMethod", BindingFlags.NonPublic | BindingFlags.Instance, null,
                         new System.Type[] {
                         typeof(string),
@@ -945,6 +955,7 @@ namespace Merlin
                         typeof(System.Type)
                         },
                     null);
+                #endif
 
                 cachedFindMethodInfo = findMethod;
             }
@@ -955,7 +966,11 @@ namespace Merlin
                 return null;
             }
 
+            #if UNITY_2022_3_OR_NEWER
+            return findMethod.Invoke(eventObject, new object[] { functionName, targetObject.GetType(), listenerMode, argType }) as MethodInfo;
+            #else
             return findMethod.Invoke(eventObject, new object[] { functionName, targetObject, listenerMode, argType }) as MethodInfo;
+            #endif
         }
 
         System.Type[] GetEventParams(UnityEventBase eventIn)
