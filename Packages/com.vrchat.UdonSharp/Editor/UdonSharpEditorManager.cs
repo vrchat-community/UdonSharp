@@ -826,7 +826,11 @@ namespace UdonSharpEditor
 
         private static List<UdonBehaviour> GetAllUdonBehaviours()
         {
+            #if UNITY_2022_3_OR_NEWER
+            int sceneCount = SceneManager.loadedSceneCount;
+            #else
             int sceneCount = EditorSceneManager.loadedSceneCount;
+            #endif
             
             List<GameObject> rootObjects = new List<GameObject>();
             List<UdonBehaviour> behaviourList = new List<UdonBehaviour>();
@@ -871,7 +875,11 @@ namespace UdonSharpEditor
             List<GameObject> rootObjects = new List<GameObject>();
             HashSet<GameObject> foundGameObjects = new HashSet<GameObject>();
             
+            #if UNITY_2022_3_OR_NEWER
+            int sceneCount = SceneManager.loadedSceneCount;
+            #else
             int sceneCount = EditorSceneManager.loadedSceneCount;
+            #endif
 
             for (int i = 0; i < sceneCount; ++i)
             {
