@@ -10,6 +10,7 @@ using UnityEngine;
 using VRC.Udon.Serialization.OdinSerializer;
 using VRC.Udon.Serialization.OdinSerializer.Utilities;
 using Debug = UnityEngine.Debug;
+using SerializationUtility = VRC.Udon.Serialization.OdinSerializer.SerializationUtility;
 
 namespace UdonSharp
 {
