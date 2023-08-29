@@ -118,6 +118,8 @@ namespace UdonSharpEditor
         
         private static void RunPostAssemblyBuildRefresh()
         {
+            ResetInspectorTitlePatch();
+
             InjectUnityEventInterceptors();
             
             if (!RunAllUpgrades())
@@ -238,7 +240,11 @@ namespace UdonSharpEditor
                 InjectedMethods.shouldSkipEventsMethod = (Func<bool>)Delegate.CreateDelegate(typeof(Func<bool>), typeof(UdonSharpBehaviour).GetMethod("ShouldSkipEvents", BindingFlags.Static | BindingFlags.NonPublic));
 
                 // Patch GUI object field drawer
+                #if UNITY_2022_3_OR_NEWER
+                MethodInfo doObjectFieldMethod = typeof(EditorGUI).GetMethods(BindingFlags.Static | BindingFlags.NonPublic).FirstOrDefault(e => e.Name == "DoObjectField" && e.GetParameters().Length == 14);
+                #else
                 MethodInfo doObjectFieldMethod = typeof(EditorGUI).GetMethods(BindingFlags.Static | BindingFlags.NonPublic).FirstOrDefault(e => e.Name == "DoObjectField" && e.GetParameters().Length == 9);
+                #endif
 
                 HarmonyMethod objectFieldProxy = new HarmonyMethod(typeof(InjectedMethods).GetMethod(nameof(InjectedMethods.DoObjectFieldProxy)));
                 harmony.Patch(doObjectFieldMethod, objectFieldProxy);
@@ -263,11 +269,13 @@ namespace UdonSharpEditor
                 harmony.Patch(buildAssetBundlesMethod, preBuildHarmonyMethod, postBuildHarmonyMethod);
 
                 // Patch a workaround for errors in Unity's APIUpdaterHelper when in a Japanese locale
+                #if !UNITY_2022_3_OR_NEWER
                 MethodInfo findTypeInLoadedAssemblies = typeof(Editor).Assembly.GetType("UnityEditor.Scripting.Compilers.APIUpdaterHelper").GetMethod("FindTypeInLoadedAssemblies", BindingFlags.Static | BindingFlags.NonPublic);
                 MethodInfo injectedFindType = typeof(InjectedMethods).GetMethod(nameof(InjectedMethods.FindTypeInLoadedAssembliesPrefix), BindingFlags.Public | BindingFlags.Static);
                 HarmonyMethod injectedFindTypeHarmonyMethod = new HarmonyMethod(injectedFindType);
 
                 harmony.Patch(findTypeInLoadedAssemblies, injectedFindTypeHarmonyMethod);
+                #endif
                 
             #if ODIN_INSPECTOR_3
                 try
@@ -317,7 +325,11 @@ namespace UdonSharpEditor
                 // }
                 
                 // Make title bars report when you are using a U# script
+                #if UNITY_2022_3_OR_NEWER
+                MethodInfo inspectorTitleMethod = typeof(ObjectNames).GetMethod(nameof(ObjectNames.GetInspectorTitle), BindingFlags.Public | BindingFlags.Static, null, new [] { typeof(Object) }, null);
+                #else
                 MethodInfo inspectorTitleMethod = typeof(ObjectNames).GetMethod(nameof(ObjectNames.GetInspectorTitle), BindingFlags.Public | BindingFlags.Static);
+                #endif
                 HarmonyMethod inspectorTitleReplacement = new HarmonyMethod(typeof(InjectedMethods).GetMethod(nameof(InjectedMethods.GetInspectorTitleForUdon), BindingFlags.Public | BindingFlags.Static));
 
                 harmony.Patch(inspectorTitleMethod, inspectorTitleReplacement);
@@ -329,16 +341,18 @@ namespace UdonSharpEditor
 
                 harmony.Patch(udonBehaviourDestroyMethod, null, udonBehaviourDestroyPostfix);
                 
+                #if !UNITY_2022_3_OR_NEWER
                 // Runtime sync the `enabled` property on UdonSharpBehaviour proxies
                 // Wraps the title bar drawing via prefix+postfix to check if enabled state has changed 
                 // This is done to allow the script to change its enabled state properly without getting overwritten when the user is viewing the inspector
                 MethodInfo doInspectorTitlebarMethod = typeof(EditorGUI).GetMethod("DoInspectorTitlebar", BindingFlags.NonPublic | BindingFlags.Static, null, new[]
                     { typeof(Rect), typeof(int), typeof(bool), typeof(Object[]), typeof(SerializedProperty), typeof(GUIStyle) }, null);
-                
+
                 HarmonyMethod titlebarPrefix = new HarmonyMethod(typeof(InjectedMethods).GetMethod(nameof(InjectedMethods.DoInspectorTitlebarPrefix)));
                 HarmonyMethod titlebarPostfix = new HarmonyMethod(typeof(InjectedMethods).GetMethod(nameof(InjectedMethods.DoInspectorTitlebarPostfix)));
 
                 harmony.Patch(doInspectorTitlebarMethod, titlebarPrefix, titlebarPostfix);
+                #endif
                 
                 MethodInfo udonBehaviourOnEnable = typeof(UdonBehaviour).GetMethod(nameof(UdonBehaviour.OnEnable), BindingFlags.Public | BindingFlags.Instance);
                 MethodInfo udonBehaviourOnDisable = typeof(UdonBehaviour).GetMethod(nameof(UdonBehaviour.OnDisable), BindingFlags.Public | BindingFlags.Instance);
@@ -737,6 +751,11 @@ namespace UdonSharpEditor
         
         private static void OnEditorUpdate()
         {
+            #if UNITY_2022_3_OR_NEWER
+            // This must be patched in EditorUpdate now because it now throws an error when patched during Asembly Reload
+            PatchInspectorTitleIfNeeded();
+            #endif
+            
             if (EditorApplication.isPlaying)
                 return;
             
@@ -754,6 +773,43 @@ namespace UdonSharpEditor
                     _didSceneUpgrade = true;
                 }
             }
+        }
+
+        private static int _updateCycles;
+        private static bool _inspectorTitlePatched;
+        
+        private static void PatchInspectorTitleIfNeeded()
+        {
+            if (_inspectorTitlePatched) return;
+            _updateCycles++;
+            if (_updateCycles <= 3) return;
+            
+            Harmony harmony = new Harmony(HARMONY_ID);
+            // Runtime sync the `enabled` property on UdonSharpBehaviour proxies
+            // Wraps the title bar drawing via prefix+postfix to check if enabled state has changed 
+            // This is done to allow the script to change its enabled state properly without getting overwritten when the user is viewing the inspector
+            MethodInfo doInspectorTitlebarMethod = typeof(EditorGUI).GetMethod("DoInspectorTitlebar",
+                BindingFlags.NonPublic | BindingFlags.Static, null, new[]
+                {
+                    typeof(Rect), typeof(int), typeof(bool), typeof(Object[]), typeof(SerializedProperty),
+                    typeof(GUIStyle)
+                }, null);
+
+            HarmonyMethod titlebarPrefix =
+                new HarmonyMethod(typeof(InjectedMethods).GetMethod(nameof(InjectedMethods.DoInspectorTitlebarPrefix)));
+            HarmonyMethod titlebarPostfix =
+                new HarmonyMethod(
+                    typeof(InjectedMethods).GetMethod(nameof(InjectedMethods.DoInspectorTitlebarPostfix)));
+
+            harmony.Patch(doInspectorTitlebarMethod, titlebarPrefix, titlebarPostfix);
+            _inspectorTitlePatched = true;
+            _updateCycles = 0;
+        }
+        
+        private static void ResetInspectorTitlePatch()
+        {
+            _inspectorTitlePatched = false;
+            _updateCycles = 0;
         }
 
         private static bool _hasCheckedDefines;
