@@ -448,16 +448,16 @@ namespace UdonSharp.Compiler.Emit
                 maxEnumVal = (int)enumVal > maxEnumVal ? (int)enumVal : maxEnumVal;
 
             // After a survey of what enums are exposed by Udon, it doesn't seem like anything goes above this limit. The only things I see that go past this are some System.Reflection enums which are unlikely to ever be exposed.
-            if (maxEnumVal > 2048)
+            if (maxEnumVal >= 2048)
                 throw new System.NotSupportedException($"Cannot cast integer to enum {enumType.Name} because target enum has too many potential states({maxEnumVal}) to contain in an UdonBehaviour reasonably");
 
             // Find the most significant bit of this enum so we can generate all combinations <= it
             int mostSignificantBit = 0;
-            int currentEnumVal = maxEnumVal;
+            int currentEnumValCount = maxEnumVal + 1;
 
-            while (currentEnumVal > 0)
+            while (currentEnumValCount > 0)
             {
-                currentEnumVal >>= 1;
+                currentEnumValCount >>= 1;
                 ++mostSignificantBit;
             }
 
