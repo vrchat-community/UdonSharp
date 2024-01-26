@@ -23,7 +23,7 @@ namespace UdonSharpEditor
 
         private static Queue<string> _debugOutputQueue = new Queue<string>();
         private static Dictionary<long, (string, UdonSharpProgramAsset)> _scriptLookup;
-        
+
         // Log watcher vars
         private static FileSystemWatcher _logDirectoryWatcher;
         private static object _logModifiedLock = new object();
@@ -44,23 +44,62 @@ namespace UdonSharpEditor
         }
 
         private static bool _didMissingDataError;
-        
+
         private static bool InitializeScriptLookup()
         {
             if (EditorApplication.isCompiling || EditorApplication.isUpdating)
                 return false;
-            
+
             if (_logDirectoryWatcher == null && ShouldListenForVRC())
             {
                 AssemblyReloadEvents.beforeAssemblyReload += CleanupLogWatcher;
 
                 // Now setup the filesystem watcher
-                #if UNITY_EDITOR_LINUX
-                string VRCDataPath =  Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.local/share/Steam/steamapps/compatdata/438100/pfx/drive_c/users/steamuser/AppData/LocalLow/VRChat/VRChat/";
-                #else // UNITY_EDITOR_WIN || UNITY_EDITOR_MAC
+                string VRCDataPath = null;
+
+#if UNITY_EDITOR_LINUX
+                string vrchatAppId = "438100";
+                string steamConfigPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.steam/steam/steamapps/libraryfolders.vdf";
+                string steamappsVrchatPath = $"steamapps/compatdata/{vrchatAppId}/pfx/drive_c/users/steamuser/AppData/LocalLow/VRChat/VRChat/";
+
+                if (File.Exists(steamConfigPath))
+                {
+                    // Read the entire content of libraryfolders.vdf
+                    var lines = File.ReadAllLines(steamConfigPath);
+                    string currentPath = null;
+
+                    foreach (var line in lines)
+                    {
+                        // Match lines with the "path" key to get the library paths
+                        if (line.Contains("\"path\""))
+                        {
+                            // Extract the path using regex
+                            var match = Regex.Match(line, "\"path\"\\s*\"([^\"]+)\"");
+
+                            if (match.Success)
+                            {
+                                currentPath = match.Groups[1].Value;
+                            }
+                        }
+
+                        // Check if the line contains the VRChat app ID
+                        if (currentPath != null && line.Contains($"\"{vrchatAppId}\""))
+                        {
+                            // Construct the VRChat data path from the found library path
+                            string vrchatPath = Path.Combine(currentPath, steamappsVrchatPath);
+                            if (Directory.Exists(vrchatPath))
+                            {
+                                VRCDataPath = vrchatPath;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+#else // UNITY_EDITOR_WIN || UNITY_EDITOR_MAC
                 string[] splitPath = Application.persistentDataPath.Split('/', '\\');
-                string VRCDataPath = string.Join("\\", splitPath.Take(splitPath.Length - 2)) + "\\VRChat\\VRChat";
-                #endif				
+                VRCDataPath = string.Join("\\", splitPath.Take(splitPath.Length - 2)) + "\\VRChat\\VRChat";
+#endif
 
                 if (Directory.Exists(VRCDataPath))
                 {
@@ -161,9 +200,9 @@ namespace UdonSharpEditor
             if (_logDirectoryWatcher != null)
                 _logDirectoryWatcher.EnableRaisingEvents = shouldListenForVRC;
 
-            if (!shouldListenForVRC) 
+            if (!shouldListenForVRC)
                 return;
-            
+
             if (_lineMatch == null)
                 _lineMatch = new Regex(MATCH_STR, RegexOptions.Compiled);
 
@@ -190,7 +229,7 @@ namespace UdonSharpEditor
                             FileInfo fileInfo = new FileInfo(logPath);
 
                             string newLogContent;
-                            
+
                             using (FileStream stream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
                                 using (StreamReader reader = new StreamReader(stream))
@@ -254,9 +293,9 @@ namespace UdonSharpEditor
                 }
             }
 
-            if (modifiedFilesAndContents == null) 
+            if (modifiedFilesAndContents == null)
                 return;
-            
+
             foreach ((string filePath, string contents) in modifiedFilesAndContents)
             {
                 LogFileState state = _logFileStates[filePath];
@@ -314,7 +353,7 @@ namespace UdonSharpEditor
                     int currentErrorIndex = contents.IndexOf(errorMatchStr, StringComparison.Ordinal);
                     while (currentErrorIndex != -1)
                     {
-                        HandleLogError(contents.Substring(currentErrorIndex, contents.Length - currentErrorIndex), $"VRChat client runtime Udon exception detected!", $"{ state.playerName ?? "Unknown"}");
+                        HandleLogError(contents.Substring(currentErrorIndex, contents.Length - currentErrorIndex), $"VRChat client runtime Udon exception detected!", $"{state.playerName ?? "Unknown"}");
 
                         currentErrorIndex = contents.IndexOf(errorMatchStr, currentErrorIndex + errorMatchStr.Length, StringComparison.Ordinal);
                     }
@@ -441,7 +480,7 @@ namespace UdonSharpEditor
                 Match programCounterMatch = Regex.Match(errorStr, @"Program Counter was at: (?<counter>\d+)");
 
                 programCounter = int.Parse(programCounterMatch.Groups["counter"].Value);
-                
+
                 Match programTypeMatch = Regex.Match(errorStr, @"Heap Dump:[\n\r\s]+[\d]x[\d]+: (?<programID>[-]?[\d]+)[\n\r\s]+[\d]x[\d]+: (?<programName>[\w]+)");
 
                 programID = long.Parse(programTypeMatch.Groups["programID"].Value);
