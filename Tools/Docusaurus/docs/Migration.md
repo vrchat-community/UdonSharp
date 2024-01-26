@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/udonsharp. This information is only relevant to users who are upgrading a project that does not support the VRChat Creator Companion. The page would need to be modified to contain this information.
+tags:
+  - move
+  - update
+---
 # Migration
 
 UdonSharp 0.x (the .unitypackage version) is deprecated and no longer supported. This new version is easy to get through the [Creator Companion](https://vcc.docs.vrchat.com), which will help you keep it up-to-date as well. We recommend you [Migrate your Projects using the Creator Companion](https://vcc.docs.vrchat.com/vpm/migrating). If you want to do the migration manually, read [Manual Migration](#manual-migration).

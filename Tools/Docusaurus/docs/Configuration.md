@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/udonsharp and update the screenshot.
+tags:
+  - move
+  - update
+---
 # Configuration
 
 All these settings can be found at `Edit > Project Settings > Udon Sharp`

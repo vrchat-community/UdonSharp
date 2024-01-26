@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/udonsharp. Contains outdated screenshots.
+tags:
+  - move
+  - update
+---
 # Runtime Exception Debugging
 
 You will often find yourself with programs that can only be debugged in-game. In order to catch these errors and make them easier to understand, U# includes a runtime exception watcher that will look for exceptions from VRChat's output log. The watcher will then output the script and line that threw that exception to your editor's log.

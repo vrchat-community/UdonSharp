@@ -1,3 +1,8 @@
+---
+comment: Move to worlds/udon/udonsharp. The information is mostly accurate.
+tags:
+  - move
+---
 # UdonSharp
 
 # Attributes

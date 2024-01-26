@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/udonsharp and remove outdated information.
+tags:
+  - move
+  - update
+---
 # Community Resources
 
 ## Tutorials and info

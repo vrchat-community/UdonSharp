@@ -1,3 +1,10 @@
+---
+comment: Merge with worlds/udon. This information is spread across dozens of pages in the main docs. Some of the information is only relevant to UdonSharp. Merging the information would be a colossal task.
+tags:
+  - move
+  - complicated
+  - update
+---
 # VRChat API
 
 ## API

@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/udonsharp and update the screenshot.
+tags:
+  - move
+  - update
+---
 # Class Exposure Tree
 
 The Class Exposure Tree will tell you what classes and methods that are available in Udon.

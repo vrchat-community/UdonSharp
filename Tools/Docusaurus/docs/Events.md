@@ -1,3 +1,9 @@
+---
+comment: The main docs have this information spread across several pages in world/udon.
+tags:
+  - merge
+  - complicated
+---
 # Events
 
 * [Udon Events](#udon-events)

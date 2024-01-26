@@ -1,3 +1,10 @@
+---
+comment: The main docs have an examples category, but it's not in the Udon category. We could move this to worlds/examples and create examples for the Udon Graph.
+tags:
+  - move
+  - complicated
+  - create-graph-examples
+---
 # Examples
 
 * [Spinning Cube](#spinning-cube)

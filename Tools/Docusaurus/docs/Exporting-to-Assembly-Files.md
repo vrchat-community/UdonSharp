@@ -1,3 +1,8 @@
+---
+comment: Move to worlds/udon/udonsharp.
+tags:
+  - move
+---
 # Exporting to Assembly Files
 This will explain how to export your U# program source assets to assembly assets for sharing without sharing the actual U# scripts
 

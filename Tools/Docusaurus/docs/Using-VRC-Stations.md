@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/components/vrc_station or worlds/udon. Graph examples should be created.
+tags:
+  - move
+  - create-graph-examples
+---
 # Using VRC Stations
 
 ### Making a chair to sit in

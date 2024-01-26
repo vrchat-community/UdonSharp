@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/udonsharp. We may want to review if the FAQ is still accurate.
+tags:
+  - move
+  - update
+---
 # Frequently Asked Questions
 
 ### Questions

@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon. This page is not specific to UdonSharp, but it required modification to make it applicable to the Udon Graph. This page may also be a good fit for our upcoming community wiki.
+tags:
+  - move
+  - update
+---
 # Random Tips & Performance Pointers
 
 This page contains a list of things to keep in mind while using Udon with U#.

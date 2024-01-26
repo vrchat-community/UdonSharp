@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/udonsharp.
+tags:
+  - move
+  - update
+---
 # Editor Scripting
 
 ## Overview

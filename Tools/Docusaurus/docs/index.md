@@ -1,3 +1,10 @@
+---
+comment: Move to worlds/udon/udonsharp. This page may require a full rewrite once Udon 2 is released. Even in its current state, it contains outdated information.
+tags:
+  - move
+  - update
+  - complicated
+---
 # UdonSharp
 
 ## A compiler for compiling C# to Udon assembly

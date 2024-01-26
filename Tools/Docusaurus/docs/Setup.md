@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/udonsharp. This page is severely outdated.
+tags:
+  - move
+  - update
+---
 # Setup
 
 **Requirements**

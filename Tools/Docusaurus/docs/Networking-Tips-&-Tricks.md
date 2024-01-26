@@ -1,3 +1,9 @@
+---
+comment: Move to worlds/udon/networking. This information is unrelated to UdonSharp. It has not been updated since 2020.
+tags:
+  - move
+  - update
+---
 # Networking Tips & Tricks
 
 * [Ownership](#ownership)
