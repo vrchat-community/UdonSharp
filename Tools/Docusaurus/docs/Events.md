@@ -107,8 +107,8 @@ These are the method stubs available for Unity events.
 - OnAnimatorIK
 - OnAnimatorMove
 - OnAudioFilterRead
-- OnBecameVisible
-- OnBecameInvisible
+- OnBecameVisible (Only works in VRChat when using public void _onBecameVisible)
+- OnBecameInvisible (Only works in VRChat when using public void _onBecameInvisible)
 - OnCollisionEnter
 - OnCollisionExit
 - OnCollisionExit2D
