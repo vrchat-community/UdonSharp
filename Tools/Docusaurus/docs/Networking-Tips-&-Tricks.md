@@ -37,5 +37,5 @@ When used in combination with networked events, events are usually processed and
 Synced variables are updated periodically by the owner. Due to the restrictions on the amount of data that can be synced, synced variables are especially costly. However they are also limited per-variable. This is especially noticeable with strings as the max character length is around 50-ish.
 
 # Instantiation
-Instantiation is currently (2020-06-17) not networked. Instantiated objects cannot be correctly synchronized.
-The only workaround is to use object-pooling. (Note: Please write a more detailed guide on that)
+Instantiation is still (2023-09-25) not networked. Instantiated objects cannot be correctly synchronized.
+The only workaround is to use object-pooling. Which can be done by making an array and filling it with an approximate number of gameobjects needed and cycling through them with networking methods by using a synced incrementing Int as the index. Which can be reset to 0 when the index reaches the array's length to start the cycle again from the "oldest" object if needed.
