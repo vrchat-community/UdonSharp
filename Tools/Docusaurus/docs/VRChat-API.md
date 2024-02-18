@@ -440,6 +440,7 @@ A component used to create portals to other rooms.
 | LeftHand | The player's left hand tracking data |
 | RightHand | The player's right hand tracking data |
 | Origin | The player's playspace origin |
+| AvatarRoot | The root transform of the player's avatar |
 
 ### VRCInputMethod
 `enum VRC.SDKBase.VRCInputMethod`
