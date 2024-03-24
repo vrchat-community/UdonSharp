@@ -383,7 +383,7 @@ namespace UdonSharp.Compiler.Binder
             else if (type == Context.GetTypeSymbol(SpecialType.System_Boolean))
                 size = sizeof(bool);
             else
-                throw new NotSupportedException("Cannot use sizeof on types other than primitive or enumeration types", node.GetLocation());
+                throw new NotSupportedException($"'{type.Name}' does not have a predefined size.", node.GetLocation());
 
             return new BoundConstantExpression(size, Context.GetTypeSymbol(SpecialType.System_Int32));
         }
