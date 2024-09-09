@@ -55,8 +55,46 @@ namespace UdonSharpEditor
                 AssemblyReloadEvents.beforeAssemblyReload += CleanupLogWatcher;
 
                 // Now setup the filesystem watcher
+                string VRCDataPath = null;
+
                 #if UNITY_EDITOR_LINUX
-                string VRCDataPath =  Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.local/share/Steam/steamapps/compatdata/438100/pfx/drive_c/users/steamuser/AppData/LocalLow/VRChat/VRChat/";
+                string vrchatAppId = "438100";
+                string steamConfigPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.steam/steam/steamapps/libraryfolders.vdf";
+                string steamappsVrchatPath = $"steamapps/compatdata/{vrchatAppId}/pfx/drive_c/users/steamuser/AppData/LocalLow/VRChat/VRChat/";
+
+                if (File.Exists(steamConfigPath))
+                {
+                    // Read the entire content of libraryfolders.vdf
+                    var lines = File.ReadAllLines(steamConfigPath);
+                    string currentPath = null;
+
+                    foreach (var line in lines)
+                    {
+                        // Match lines with the "path" key to get the library paths
+                        if (line.Contains("\"path\""))
+                        {
+                            // Extract the path using regex
+                            var match = Regex.Match(line, "\"path\"\\s*\"([^\"]+)\"");
+
+                            if (match.Success)
+                            {
+                                currentPath = match.Groups[1].Value;
+                            }
+                        }
+
+                        // Check if the line contains the VRChat app ID
+                        if (currentPath != null && line.Contains($"\"{vrchatAppId}\""))
+                        {
+                            // Construct the VRChat data path from the found library path
+                            string vrchatPath = Path.Combine(currentPath, steamappsVrchatPath);
+                            if (Directory.Exists(vrchatPath))
+                            {
+                                VRCDataPath = vrchatPath;
+                                break;
+                            }
+                        }
+                    }
+                }
                 #else // UNITY_EDITOR_WIN || UNITY_EDITOR_MAC
                 string[] splitPath = Application.persistentDataPath.Split('/', '\\');
                 string VRCDataPath = string.Join("\\", splitPath.Take(splitPath.Length - 2)) + "\\VRChat\\VRChat";
