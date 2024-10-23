@@ -346,6 +346,47 @@ namespace UdonSharp.Compiler.Binder
 
             return new BoundConstantExpression(type.UdonType.SystemType, Context.GetTypeSymbol(typeof(Type)));
         }
+
+        public override BoundNode VisitSizeOfExpression(SizeOfExpressionSyntax node)
+        {
+            TypeSymbol type = GetTypeSymbol(node.Type);
+
+            if (type.IsEnum)
+                type = Context.GetTypeSymbol(((INamedTypeSymbol)type.RoslynSymbol).EnumUnderlyingType);
+
+            int size;
+
+            if (type == Context.GetTypeSymbol(SpecialType.System_SByte))
+                size = sizeof(sbyte);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Byte))
+                size = sizeof(byte);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Int16))
+                size = sizeof(short);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_UInt16))
+                size = sizeof(ushort);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Int32))
+                size = sizeof(int);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_UInt32))
+                size = sizeof(uint);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Int64))
+                size = sizeof(long);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_UInt64))
+                size = sizeof(ulong);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Char))
+                size = sizeof(char);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Single))
+                size = sizeof(float);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Double))
+                size = sizeof(double);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Decimal))
+                size = sizeof(decimal);
+            else if (type == Context.GetTypeSymbol(SpecialType.System_Boolean))
+                size = sizeof(bool);
+            else
+                throw new NotSupportedException($"'{type.Name}' does not have a predefined size.", node.GetLocation());
+
+            return new BoundConstantExpression(size, Context.GetTypeSymbol(SpecialType.System_Int32));
+        }
         
         private BoundExpression HandleNameOfExpression(InvocationExpressionSyntax node)
         {
