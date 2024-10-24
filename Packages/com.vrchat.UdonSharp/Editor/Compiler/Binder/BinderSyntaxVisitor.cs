@@ -467,11 +467,11 @@ namespace UdonSharp.Compiler.Binder
                 }
                 else
                 {
-                    paramCount = argumentsList.Count - handledArgsCount;
+                    paramCount = argumentsList.Count - (handledArgsCount - startIdx);
                     paramExpressions = new BoundExpression[paramCount];
 
                     int idx = 0;
-                    for (int i = handledArgsCount; i < argumentsList.Count; ++i)
+                    for (int i = handledArgsCount - startIdx; i < argumentsList.Count; ++i)
                     {
                         paramExpressions[idx++] = VisitExpression(argumentsList[i].Expression);
                     }
