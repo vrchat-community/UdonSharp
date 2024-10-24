@@ -7,6 +7,11 @@ using VRC.Udon;
 
 namespace UdonSharp.Tests
 {
+    enum MyUserDefinedEnum
+    {
+        Element0, Element1
+    }
+
     [AddComponentMenu("Udon Sharp/Tests/MethodCallsTest")]
     public class MethodCallsTest : UdonSharpBehaviour
     {
@@ -28,6 +33,16 @@ namespace UdonSharp.Tests
         private string MyDefaultParamsMethod(string a, string b = "B", string c = "C", string d = "D", params string[] elements)
         {
             return a + b + c + d + string.Join("", elements);
+        }
+        
+        private string MyUserDefinedEnumDefaultParamMethod(MyUserDefinedEnum e = MyUserDefinedEnum.Element0)
+        {
+            switch (e)
+            {
+                case MyUserDefinedEnum.Element0: return nameof(MyUserDefinedEnum.Element0);
+                case MyUserDefinedEnum.Element1: return nameof(MyUserDefinedEnum.Element1);
+                default: return null;
+            }
         }
 
         public void ExecuteTests()
@@ -89,6 +104,9 @@ namespace UdonSharp.Tests
             tester.TestAssertion("Params array 4", MyDefaultParamsMethod("a", "b", "c", "d", new string[] { "e", "f" }) == "abcdef");
 
             tester.TestAssertion("Params array 5", MyDefaultParamsMethod("a", elements: new string[] { "e", "f" }, b: "b", d: "d") == "abCdef");
+
+            tester.TestAssertion("Default user defined enum param 1", MyUserDefinedEnumDefaultParamMethod() == "Element0");
+            tester.TestAssertion("Default user defined enum param 2", MyUserDefinedEnumDefaultParamMethod(MyUserDefinedEnum.Element1) == "Element1");
 
             enabled = false;
             tester.TestAssertion("UdonBehaviour enabled", enabled == false);
