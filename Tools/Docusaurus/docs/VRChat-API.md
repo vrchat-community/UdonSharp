@@ -168,8 +168,8 @@ UdonBehaviour behaviour = (UdonBehaviour)GetComponent(typeof(UdonBehaviour));
 | | void | TeleportTo([Vector3](https://docs.unity3d.com/ScriptReference/Vector3.html) teleportPos, [Quaternion](https://docs.unity3d.com/ScriptReference/Quaternion.html) teleportRot, [SpawnOrientation](#spawnorientation) teleportOrientation) | Teleports the player to the position, rotation, and the spawn orientation |
 | | void | TeleportTo([Vector3](https://docs.unity3d.com/ScriptReference/Vector3.html) teleportPos, [Quaternion](https://docs.unity3d.com/ScriptReference/Quaternion.html) teleportRot, [SpawnOrientation](#spawnorientation) teleportOrientation, bool lerpOnRemote) | Teleports the player to the position, rotation, the spawn orientation, and if you want to lerp on remote |
 | | void | EnablePickup(bool enable) | Set if the player can use pickups or not (*Need Testing*) |
-| | void | SetPlayerTag(string tagName, string tagValue) | Assigns a value to the tag for the player.  Returns null if the tag has not been assigned.  Note that player tags are not synchronized to remote clients. |
-| | string | GetPlayerTag(string tagName) | Returns the value of the given tag for the player. Assign a value of null to clear the tag. |
+| | void | SetPlayerTag(string tagName, string tagValue) | Assigns a value to the tag for the player. Assign a value of null to clear the tag. Note that player tags are not synchronized to remote clients.  |
+| | string | GetPlayerTag(string tagName) | Returns the value of the given tag for the player. Returns null if the tag has not been assigned.|
 | | void | ClearPlayerTags() | Clears the tags on the given player |
 | | void | SetRunSpeed(float speed) | Sets the player run speed |
 | | void | SetWalkSpeed(float speed) | Sets the players walk speed |
