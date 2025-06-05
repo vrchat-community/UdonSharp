@@ -68,7 +68,7 @@ Return to VRChat - open the "Worlds" menu, then scroll down to the section named
 
 ## Visual Studio Code Integration
 
-You can follow [this video guide](https://www.youtube.com/watch?v=ihVAKiJdd40) to get Intellisense for C# within your Unity project in Visual Stido Code (VS Code), inlcuding libraries such as UdonSharp.
+You can follow [this video guide](https://www.youtube.com/watch?v=ihVAKiJdd40) to get Intellisense for C# within your Unity project in Visual Studio Code (VS Code), inlcuding libraries such as UdonSharp.
   
 ## Credits
 
