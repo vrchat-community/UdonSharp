@@ -375,7 +375,7 @@ A component used to allow objects to be picked up and held.
 | Returns | Name | Summary |
 | --- | --- | --- |
 | void | Drop() | Drops the pickup if it is being held by a player. |
-| void | Drop([VRCPlayerApi](#vrcplayerapi) instigator) | Drops the pickup if it is being held by a player. Note that the pickup will only drop if `instigator` is the player who is holding the pickup. |
+| void | Drop([VRCPlayerApi](#vrcplayerapi) player) | Drops the pickup if it is being held by a player. Note that the pickup will only drop if `player` is the player who is holding the pickup. |
 | void | GenerateHapticEvent(float duration, float amplitude, float frequency) | Plays haptic feedback on the player's controller. Default values are duration: 0.25, amplitude: 0.5, frequency: 0.5. |
 | void | PlayHaptics() | Plays haptic feedback on the player's controller. |
 
