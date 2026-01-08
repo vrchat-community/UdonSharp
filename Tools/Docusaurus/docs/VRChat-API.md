@@ -404,6 +404,8 @@ A component used to create portals to other rooms.
 | --- | --- |
 | Update | The event is fired during the `Update()` event. |
 | LateUpdate | The event is fired during the `LateUpdate()` event. |
+| FixedUpdate | The event is fired during the `FixedUpdate()` event. |
+| PostLateUpdate | The event is fired during the `PostLateUpdate()` event. |
 
 ### Mobility
 `enum VRC.SDKBase.VRCStation.Mobility`
