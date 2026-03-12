@@ -148,7 +148,10 @@ namespace UdonSharpEditor
         private static void OnEditorUpdate()
         {
             if (!InitializeScriptLookup())
+            {
+                CleanupLogWatcher();
                 return;
+            }
 
             while (_debugOutputQueue.Count > 0)
             {
