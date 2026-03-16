@@ -40,26 +40,10 @@ namespace UdonSharpEditor
                 
                 foreach (Vertex vertex in _vertices)
                 {
-                    if (PrefabUtility.IsPartOfVariantPrefab(vertex.Prefab))
-                    {
-                        Vertex parent = _vertexLookup[PrefabUtility.GetCorrespondingObjectFromSource(vertex.Prefab)];
-
-                        if (parent == vertex)
-                        {
-                            throw new Exception($"Parent of vertex cannot be the same as the vertex '{vertex.Prefab}'");
-                        }
-                        
-                        vertex.Parents.Add(parent);
-                        parent.Children.Add(vertex);
-                    }
-
+                    // We don't have to process prefab variant and nested prefab separately
+                    // because prefab variant is just a nested prefab at the root GameObject of prefab.
                     foreach (GameObject child in vertex.Prefab.GetComponentsInChildren<Transform>(true).Select(e => e.gameObject))
                     {
-                        if (child == vertex.Prefab)
-                        {
-                            continue;
-                        }
-
                         if (PrefabUtility.IsAnyPrefabInstanceRoot(child))
                         {
                             GameObject parentPrefab = PrefabUtility.GetCorrespondingObjectFromSource(child);
