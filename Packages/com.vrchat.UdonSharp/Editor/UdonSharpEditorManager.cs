@@ -817,6 +817,11 @@ namespace UdonSharpEditor
                 {
                     UdonSharpEditorUtility.UpgradePrefabs(GetAllPrefabsWithUdonSharpBehaviours());
                 }
+                catch (Exception e)
+                {
+                    UdonSharpUtils.LogError($"Exception while upgrading prefabs. Exception: {e}");
+                    EditorUtility.DisplayDialog("Error", "Exception while upgrading prefabs! This might be a bug!", "OK");
+                }
                 finally
                 {
                     UdonSharpEditorCache.Instance.ClearUpgradePassQueue();
