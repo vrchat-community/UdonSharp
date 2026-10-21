@@ -10,7 +10,12 @@ namespace UdonSharp.Compiler.Symbols
             : base(sourceSymbol, context)
         {
             if (sourceSymbol != null)
-                ExternSignature = CompilerUdonInterface.GetUdonMethodName(this, context);
+            {
+                if (OriginalSymbol is ExternMethodSymbol originalMethodSymbol)
+                    ExternSignature = CompilerUdonInterface.GetUdonMethodName(originalMethodSymbol, context);
+                else
+                    ExternSignature = CompilerUdonInterface.GetUdonMethodName(this, context);
+            }
         }
 
         public override bool IsExtern => true;
