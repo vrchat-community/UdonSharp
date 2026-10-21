@@ -34,6 +34,7 @@ namespace UdonSharp.Tests
             UdonBehaviourFieldCompoundAssignment();
             NullEquals();
             CastCharToFloat();
+            UnaryPlus();
         }
 
         void IntBinaryOps()
@@ -480,6 +481,12 @@ namespace UdonSharp.Tests
             tester.TestAssertion("Cast char to float", c == 97f);
             tester.TestAssertion("Cast char to double", c == 97.0);
             tester.TestAssertion("Cast char to decimal", c == 97m);
+        }
+
+        void UnaryPlus()
+        {
+            int n = 1;
+            tester.TestAssertion("Strip unary plus operator", +n == 1);
         }
     }
 }
