@@ -145,7 +145,7 @@ namespace UdonSharp
         /// <remarks>This will only function if the UdonSharpBehaviour is set to Manual sync mode and the person calling RequestSerialization() is the owner of the object.</remarks>
         /// </summary>
         [PublicAPI]
-        public void RequestSerialization() { }
+        public virtual void RequestSerialization() { }
 
         // Stubs for builtin UdonSharp methods to get type info
         private static long GetUdonTypeID(System.Type type)
