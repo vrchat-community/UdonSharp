@@ -31,7 +31,7 @@ namespace UdonSharp.Compiler.Symbols
 
             if (RoslynSymbol.HasExplicitDefaultValue)
             {
-                if (Type.IsEnum)
+                if (Type.UdonType.SystemType.IsEnum)
                 {
                     DefaultValue = (IConstantValue) Activator.CreateInstance(
                         typeof(ConstantValue<>).MakeGenericType(Type.UdonType.SystemType),
